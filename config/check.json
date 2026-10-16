@@ -1,0 +1,24 @@
+{
+    "sharedInExercises": [
+        "config/plugin.ts",
+        "config/markdown.ts",
+        "config/page.ts",
+        "config/editor.ts",
+        "config/vite.config.ts",
+        "config/tsconfig.json",
+        "config/tsconfig.node.json",
+        "config/eslint.config.js",
+        "config/.prettierrc.json",
+        "tsconfig.json",
+        "eslint.config.js",
+        ".prettierignore",
+        "config/boxes.json",
+        "config/highlight.json"
+    ],
+    "sharedWithRoot": [
+        "config/plugin.ts",
+        "config/markdown.ts",
+        "config/vite.config.ts",
+        "config/boxes.json"
+    ]
+}

@@ -13,7 +13,7 @@
         "dev": "vite --config config/vite.config.ts",
         "check": "npm run check:repo && npm run typecheck && npm run lint && npm run pretty:check",
         "check:repo": "node config/check.ts",
-        "typecheck": "tsc -b",
+        "typecheck": "tsc -b && npm run typecheck --workspaces --if-present",
         "lint": "eslint .",
         "pretty": "prettier --write . --config config/.prettierrc.json",
         "pretty:check": "prettier --check . --config config/.prettierrc.json"

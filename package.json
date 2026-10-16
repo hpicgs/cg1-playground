@@ -1,0 +1,35 @@
+{
+    "name": "cg1-playground",
+    "private": true,
+    "type": "module",
+    "workspaces": [
+        "exercises/*"
+    ],
+    "engines": {
+        "node": ">=24"
+    },
+    "prettier": "./config/.prettierrc.json",
+    "scripts": {
+        "dev": "vite --config config/vite.config.ts",
+        "check": "npm run check:repo && npm run typecheck && npm run lint && npm run pretty:check",
+        "check:repo": "node config/check.ts",
+        "typecheck": "tsc -b",
+        "lint": "eslint .",
+        "pretty": "prettier --write . --config config/.prettierrc.json",
+        "pretty:check": "prettier --check . --config config/.prettierrc.json"
+    },
+    "dependencies": {
+        "katex": "0.19.0",
+        "markdown-it": "15.0.3"
+    },
+    "devDependencies": {
+        "@eslint/js": "10.0.1",
+        "@types/markdown-it": "14.2.0",
+        "@types/node": "24.19.2",
+        "eslint": "10.12.0",
+        "prettier": "3.9.10",
+        "typescript": "6.0.3",
+        "typescript-eslint": "8.71.2",
+        "vite": "8.3.4"
+    }
+}

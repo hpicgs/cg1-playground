@@ -1,0 +1,84 @@
+:root {
+    color-scheme: dark;
+    --background: #15171c;
+    --surface: #1d2027;
+    --border: #2e333d;
+    --text: #d9dce2;
+    --muted: #949aa6;
+    --accent: #e0905c;
+    --error: #ff6b6b;
+}
+
+html {
+    background: var(--background);
+    color: var(--text);
+    font:
+        18px/1.6 system-ui,
+        sans-serif;
+}
+
+body {
+    margin: 0;
+}
+
+main {
+    max-width: 50rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+}
+
+header {
+    margin-bottom: 2.5rem;
+}
+
+.course {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 0.2rem 0 0;
+    font-size: 2.2rem;
+    line-height: 1.2;
+}
+
+h2 {
+    margin-top: 2.5rem;
+    font-size: 1.2rem;
+}
+
+/* One card per exercise. */
+.exercise {
+    display: block;
+    margin: 0.8rem 0;
+    padding: 0.9rem 1.2rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+}
+
+.exercise:hover {
+    border-color: var(--accent);
+}
+
+.exercise strong {
+    display: block;
+}
+
+.exercise span {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.error {
+    padding: 0.6rem 1rem;
+    border-left: 4px solid var(--error);
+    background: color-mix(in srgb, var(--error) 12%, var(--background));
+    font-size: 0.9rem;
+}

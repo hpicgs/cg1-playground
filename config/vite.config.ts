@@ -4,6 +4,7 @@ import { playground } from "./plugin.ts";
 
 export default defineConfig({
     root: resolve(import.meta.dirname, ".."),
+    appType: "mpa",
     server: {
         host: "localhost",
     },

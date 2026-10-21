@@ -1,41 +1,23 @@
-// Checks the repository conventions before a PR, since there is no CI (requirements §7.2).
-// Run it with `npm run check:repo`. Node runs this file directly and only strips the types.
+// Repository convention checks (npm run check:repo).
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import sharedFiles from "./check.json" with { type: "json" };
 
 const root = resolve(import.meta.dirname, "..");
 const errors: string[] = [];
 
-// Files that must be byte-identical in every exercise.
-const sharedInExercises = [
-    "config/plugin.ts",
-    "config/markdown.ts",
-    "config/page.ts",
-    "config/editor.ts",
-    "config/vite.config.ts",
-    "config/tsconfig.json",
-    "config/tsconfig.node.json",
-    "config/eslint.config.js",
-    "config/.prettierrc.json",
-    "tsconfig.json",
-    "eslint.config.js",
-    ".prettierignore",
-];
+/** Files that must be identical in every exercise, and those that must also match the root. */
+const { sharedInExercises, sharedWithRoot } = sharedFiles;
 
-// Server-side files that must also be identical between the repository root and every exercise,
-// because the root server runs its own copy of them.
-const sharedWithRoot = ["config/plugin.ts", "config/markdown.ts", "config/vite.config.ts"];
-
-// Exercise folders are named <chapter>-<n>-<slug>, for example 02-1-dithering.
+/** Exercise folder names: `<chapter>-<n>-<slug>`. */
 const exerciseName = /^\d{2}-\d+-[a-z0-9]+(-[a-z0-9]+)*$/;
 
-// Every folder in exercises/ is an exercise. Plain files such as .gitkeep are skipped.
+// Exercise folders.
 const exercises = readdirSync(join(root, "exercises"), { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
     .sort();
 
-// Reads a file as text, or returns undefined if it does not exist.
 function readText(path: string): string | undefined {
     return existsSync(path) ? readFileSync(path, "utf8") : undefined;
 }
@@ -47,8 +29,7 @@ for (const name of exercises) {
     }
 }
 
-// 2. Package names. npm workspaces need unique names, and a copied exercise with an unchanged
-// name breaks `npm install` for the whole repository.
+// 2. Package names.
 type PackageJson = {
     name?: string;
     dependencies?: Record<string, string>;
@@ -72,8 +53,7 @@ for (const name of exercises) {
     }
 }
 
-// 3. Versions. A package used in several package.json files must have the same version in all
-// of them, so that no exercise runs the shared plugin against another version.
+// 3. Versions.
 const firstSeen = new Map<string, { version: string; path: string }>();
 for (const { path, json } of packages) {
     const dependencies = { ...json.dependencies, ...json.devDependencies };
@@ -89,8 +69,7 @@ for (const { path, json } of packages) {
     }
 }
 
-// 4. Shared files. Each exercise is compared with the first exercise, and the server-side files
-// also with the root. A missing file counts as a difference.
+// 4. Shared files.
 const reference = exercises[0];
 if (reference !== undefined) {
     for (const file of sharedInExercises) {
@@ -111,7 +90,7 @@ if (reference !== undefined) {
     }
 }
 
-// Report the result. A non-zero exit code stops `npm run check`.
+// Result.
 if (errors.length > 0) {
     for (const error of errors) {
         console.error(error);

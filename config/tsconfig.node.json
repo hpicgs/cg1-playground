@@ -12,9 +12,10 @@
         "allowImportingTsExtensions": true,
         "erasableSyntaxOnly": true,
         "verbatimModuleSyntax": true,
+        "resolveJsonModule": true,
 
         "strict": true,
         "skipLibCheck": true
     },
-    "include": ["vite.config.ts", "plugin.ts", "check.ts"]
+    "include": ["vite.config.ts", "plugin.ts", "markdown.ts", "check.ts"]
 }

@@ -1,0 +1,38 @@
+{
+    "name": "02-2-image-filters",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": ">=24"
+    },
+    "prettier": "./config/.prettierrc.json",
+    "scripts": {
+        "dev": "vite --config config/vite.config.ts",
+        "typecheck": "tsc -b",
+        "lint": "eslint .",
+        "pretty": "prettier --write . --config config/.prettierrc.json",
+        "pretty:check": "prettier --check . --config config/.prettierrc.json"
+    },
+    "dependencies": {
+        "@codemirror/commands": "6.11.1",
+        "@codemirror/lang-javascript": "6.2.5",
+        "@codemirror/language": "6.13.1",
+        "@codemirror/state": "6.7.6",
+        "@codemirror/view": "6.43.14",
+        "codemirror-lang-glsl": "0.5.0",
+        "gl-matrix": "3.4.4",
+        "katex": "0.19.0",
+        "lil-gui": "0.21.0",
+        "markdown-it": "15.0.3"
+    },
+    "devDependencies": {
+        "@eslint/js": "10.0.1",
+        "@types/markdown-it": "14.2.0",
+        "@types/node": "24.19.2",
+        "eslint": "10.12.0",
+        "prettier": "3.9.10",
+        "typescript": "6.0.3",
+        "typescript-eslint": "8.71.2",
+        "vite": "8.3.4"
+    }
+}

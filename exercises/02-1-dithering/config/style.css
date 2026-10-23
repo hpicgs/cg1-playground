@@ -328,6 +328,11 @@ figcaption {
     background: none;
 }
 
+/* With an editor, the error keeps the canvas's height, so the shader can still be fixed. */
+.demo.has-editor .demo-error {
+    aspect-ratio: var(--demo-aspect);
+}
+
 /* Shader editor left of the canvas. */
 .demo.has-editor {
     display: grid;

@@ -1,0 +1,4 @@
+{
+    "title": "Bildfilter auf CPU und GPU",
+    "description": "Ein Bild mit Box- und Laplace-Filter falten, einmal als Schleife auf der CPU und einmal als Fragment-Shader."
+}

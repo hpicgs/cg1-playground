@@ -220,6 +220,11 @@ figcaption {
     color: var(--right);
 }
 
+.question.partial legend::after {
+    content: " teilweise richtig";
+    color: var(--note);
+}
+
 .question.wrong legend::after {
     content: " falsch";
     color: var(--error);

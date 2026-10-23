@@ -197,7 +197,8 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(".copy-path"))
 }
 
 // Self-tests: Auswerten colours the checked options, marks each question and counts the
-// right ones. A question is right if exactly its right options are checked.
+// right ones. A question is right if exactly its right options are checked, and partly right
+// if at least one of its right options is checked.
 for (const quiz of document.querySelectorAll<HTMLElement>(".quiz")) {
     const questions = [...quiz.querySelectorAll<HTMLElement>(".question")];
     const score = quiz.querySelector(".quiz-result span");
@@ -206,6 +207,7 @@ for (const quiz of document.querySelectorAll<HTMLElement>(".quiz")) {
         let rightQuestions = 0;
         for (const question of questions) {
             let allRight = true;
+            let someRight = false;
             for (const input of question.querySelectorAll<HTMLInputElement>("input")) {
                 const correct = input.dataset.correct === "true";
                 const option = input.closest(".option");
@@ -214,9 +216,13 @@ for (const quiz of document.querySelectorAll<HTMLElement>(".quiz")) {
                 if (input.checked !== correct) {
                     allRight = false;
                 }
+                if (input.checked && correct) {
+                    someRight = true;
+                }
             }
             question.classList.toggle("right", allRight);
-            question.classList.toggle("wrong", !allRight);
+            question.classList.toggle("partial", !allRight && someRight);
+            question.classList.toggle("wrong", !allRight && !someRight);
             if (allRight) {
                 rightQuestions += 1;
             }
@@ -230,7 +236,7 @@ for (const quiz of document.querySelectorAll<HTMLElement>(".quiz")) {
     for (const question of questions) {
         question.addEventListener("change", () => {
             for (const element of [question, ...question.querySelectorAll(".option")]) {
-                element.classList.remove("right", "wrong");
+                element.classList.remove("right", "partial", "wrong");
             }
         });
     }

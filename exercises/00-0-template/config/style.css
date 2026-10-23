@@ -265,6 +265,11 @@ figcaption {
     color: var(--task);
 }
 
+/* Subtasks inside a task are lettered a), b), … */
+.task ol > li::marker {
+    content: counter(list-item, lower-alpha) ") ";
+}
+
 .solution {
     margin-top: 1rem;
     padding: 0.5rem 0.9rem;

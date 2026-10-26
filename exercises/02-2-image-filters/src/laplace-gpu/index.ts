@@ -104,12 +104,13 @@ async function loadPhoto(): Promise<ImageData> {
     return context.getImageData(0, 0, width, height);
 }
 
-// Adds new random noise between -a and a to R, G and B of every pixel of the photo.
+// Adds new random noise between -a and a to every pixel of the photo. R, G and B get the
+// same value, so the noise is gray and not coloured.
 function changeNoise(): void {
     const noisy = new ImageData(new Uint8ClampedArray(photo.data), photo.width, photo.height);
     for (let index = 0; index < photo.data.length; index += 4) {
+        const offset = (2 * Math.random() - 1) * params.noise * 255;
         for (let c = 0; c < 3; c++) {
-            const offset = (2 * Math.random() - 1) * params.noise * 255;
             noisy.data[index + c] = photo.data[index + c] + offset;
         }
     }

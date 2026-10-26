@@ -183,7 +183,7 @@ Schreibe den Laplace-Filter in \vscode{src/laplace-gpu/laplace.frag}[laplace.fra
 \end{task}
 
 \begin{task}[Rauschen (optional)]
-Folie 60 nennt den Laplace-Filter rauschempfindlich und empfiehlt, vorher zu glätten. Der Regler „Rauschen a“ der Demo zur GPU addiert zu R, G und B jedes Pixels im Foto einen Zufallswert zwischen $-a$ und $a$. Glätte das Bild in \vscode{src/laplace-gpu/laplace.frag}[laplace.frag] vor dem Laplace-Filter mit dem $3 \times 3$-Gauss-Filter von Folie 56. Schreibe dazu eine Funktion, die den geglätteten Wert an einer Stelle liefert, und wende den Laplace-Filter auf diese Werte an.
+Folie 60 nennt den Laplace-Filter rauschempfindlich und empfiehlt, vorher zu glätten. Der Regler „Rauschen a“ der Demo zur GPU addiert zu R, G und B jedes Pixels im Foto denselben Zufallswert zwischen $-a$ und $a$. Glätte das Bild in \vscode{src/laplace-gpu/laplace.frag}[laplace.frag] vor dem Laplace-Filter mit dem $3 \times 3$-Gauss-Filter von Folie 56. Schreibe dazu eine Funktion, die den geglätteten Wert an einer Stelle liefert, und wende den Laplace-Filter auf diese Werte an.
 
 1. Vorhersage: Rauschen $a = 0.05$ verschiebt jeden Kanal um bis zu $0.05 \cdot 255 \approx 13$ Bytes. Wie groß kann $|L|$ ohne Glättung in einer gleichmäßigen Fläche höchstens werden? Ist das mehr oder weniger als $|L|$ an der Kante zwischen 60 und 120 im Testbild? Sieh dir das Foto mit Rauschen 0.05 an.
 2. Vorhersage: Wie verändern sich mit Glättung die Körnung und die Kanten im Foto und im Testbild? Prüfe. Stelle danach deinen Laplace-Filter ohne Glättung wieder her.

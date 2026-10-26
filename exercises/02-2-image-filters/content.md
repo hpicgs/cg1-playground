@@ -46,7 +46,9 @@ void main() {
 }
 ```
 
-Die erste Zeile wählt die Sprachversion GLSL ES 3.00 und muss ganz oben stehen. `precision highp float` rechnet mit 32-Bit-Floats. Ein `uniform` ist ein globaler Parameter wie der Drehwinkel auf Folie 35 in Kapitel 1: Der TypeScript-Code setzt ihn vor dem Zeichnen, und er hat in allen Fragmenten denselben Wert. Hier ist `image` das Eingabebild als Textur und `size` seine Größe $(W, H)$ in Pixeln. `in vec2 uv` ist die Texturkoordinate des aktuellen Fragments, die der Vertex-Shader `quad.vert` vorgibt, und `out vec4 fragColor` ist die Ausgabe, die Farbe des Fragments.
+Die erste Zeile wählt die Sprachversion GLSL ES 3.00 und muss ganz oben stehen. `precision highp float` rechnet mit 32-Bit-Floats.
+
+Die Variablen vor `main` verbinden den Shader mit seiner Umgebung, und ihr Schlüsselwort sagt, woher ein Wert kommt. Ein `uniform` setzt der TypeScript-Code vor dem Zeichnen, und er hat in allen Fragmenten denselben Wert, ein globaler Parameter wie der Drehwinkel in Kapitel 1, Folie 35. Hier sind das das Eingabebild `image` als Textur und seine Größe `size` $= (W, H)$ in Pixeln. Ein `in` hat in jedem Fragment einen eigenen Wert, den der Vertex-Shader liefert; hier ist das die Texturkoordinate `uv` aus `quad.vert`. Ein `out` ist das Ergebnis des Fragments, hier seine Farbe `fragColor`.
 
 `texture(image, uv)` liest die Farbe an der Stelle `uv` als `vec4` mit Werten in $[0, 1]$. Die Textur ist auf Nearest Filtering eingestellt (Folie 72), `texture` liefert also ohne Interpolation das Pixel des Bildes, in dessen Fläche `uv` liegt. Die Demos zeigen das Bild vergrößert, deshalb bedeckt ein Pixel des Bildes viele Fragmente, und alle lesen dasselbe Pixel. Was der Shader in `fragColor` schreibt, wird als Byte gespeichert: Jeder Wert wird auf $[0, 1]$ begrenzt und als $\operatorname{round}(255 \cdot x)$ abgelegt.
 

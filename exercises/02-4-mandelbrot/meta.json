@@ -1,0 +1,4 @@
+{
+    "title": "Mandelbrot-Menge",
+    "description": "Für jedes Pixel eine Folge komplexer Zahlen berechnen und die Mandelbrot-Menge darstellen."
+}

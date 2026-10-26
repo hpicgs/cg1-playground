@@ -1,0 +1,50 @@
+#version 300 es
+
+// Your own pictures of the Mandelbrot set.
+
+precision highp float;
+
+uniform float xmin;
+uniform float xmax;
+uniform float ymin;
+uniform float ymax;
+uniform int maxIterations;
+uniform vec3 color1;
+uniform vec3 color2;
+uniform vec3 color3;
+uniform vec2 juliaC;
+uniform vec2 size;
+
+in vec2 uv;
+
+out vec4 fragColor;
+
+// HSV to RGB as on Kapitel 2, Folie 11,
+// with h in [0, 1) instead of degrees.
+vec3 hsv2rgb(float h, float s, float v) {
+    float sector = floor(6.0 * h);
+    float f = 6.0 * h - sector;
+    float p = v * (1.0 - s);
+    float q = v * (1.0 - s * f);
+    float t = v * (1.0 - s * (1.0 - f));
+
+    // h_i on the slide: the sixth of the circle h lies in.
+    int hi = int(sector);
+    if (hi == 0) {
+        return vec3(v, t, p);
+    } else if (hi == 1) {
+        return vec3(q, v, p);
+    } else if (hi == 2) {
+        return vec3(p, v, t);
+    } else if (hi == 3) {
+        return vec3(p, q, v);
+    } else if (hi == 4) {
+        return vec3(t, p, v);
+    }
+    return vec3(v, p, q);
+}
+
+void main() {
+    // TODO: implement your code here.
+    fragColor = vec4(hsv2rgb(uv.x, 1.0, 1.0), 1.0);
+}

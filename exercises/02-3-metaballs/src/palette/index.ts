@@ -1,0 +1,103 @@
+import GUI from "lil-gui";
+import { createBalls, moveBalls, type Ball } from "./balls";
+import * as renderer from "./renderer";
+
+const params = {
+    count: 5,
+    lambda: 1,
+    threshold: 1,
+    color1: [0.1, 0.1, 0.4],
+    color2: [0.9, 0.3, 0.2],
+    color3: [1, 0.9, 0.5],
+    speed: 1,
+};
+
+let canvas: HTMLCanvasElement;
+let balls: Ball[];
+let visible = false;
+let animating = false;
+
+export function start(
+    element: HTMLCanvasElement,
+    controls: HTMLElement,
+    sources: Record<string, string>,
+): void {
+    canvas = element;
+    const gl = renderer.init(canvas, sources);
+    balls = createBalls(renderer.maxBalls, domainWidth());
+
+    const gui = new GUI({ container: controls, title: "Eigene Farben" });
+    gui.add(params, "count", 1, renderer.maxBalls, 1).name("Anzahl");
+    gui.add(params, "lambda", 0.05, 2, 0.01).name("Radiusfaktor λ");
+    gui.add(params, "threshold").step(0.01).name("Schwellwert T");
+    gui.addColor(params, "color1").name("Farbe 1");
+    gui.addColor(params, "color2").name("Farbe 2");
+    gui.addColor(params, "color3").name("Farbe 3");
+    gui.add(params, "speed", 0, 2, 0.1).name("Geschwindigkeit");
+    gui.onChange(() => {
+        draw();
+        animate();
+    });
+
+    // Keep the drawing buffer at the canvas's displayed size (in device pixels).
+    function resize(): void {
+        const dpr = window.devicePixelRatio || 1;
+        const w = Math.floor(canvas.clientWidth * dpr);
+        const h = Math.floor(canvas.clientHeight * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+            canvas.width = w;
+            canvas.height = h;
+            gl.viewport(0, 0, w, h);
+            draw();
+        }
+    }
+    window.addEventListener("resize", resize);
+    document.addEventListener("fullscreenchange", resize);
+    resize();
+}
+
+export function rebuild(sources: Record<string, string>): void {
+    renderer.setShaders(sources);
+    draw();
+}
+
+// Called by the page when the demo scrolls in or out of view.
+export function setVisible(isVisible: boolean): void {
+    visible = isVisible;
+    animate();
+}
+
+// The width of the domain in which the balls move, in units of its height.
+function domainWidth(): number {
+    return canvas.clientWidth / canvas.clientHeight;
+}
+
+function draw(): void {
+    renderer.draw({
+        balls: balls.slice(0, params.count),
+        lambda: params.lambda,
+        threshold: params.threshold,
+        colors: [params.color1, params.color2, params.color3],
+    });
+}
+
+// Moves the balls while the speed is above zero and the demo is in view.
+function animate(): void {
+    if (animating || !visible || params.speed === 0) {
+        return;
+    }
+    animating = true;
+    let lastTime = performance.now();
+    function frame(time: number): void {
+        if (!visible || params.speed === 0) {
+            animating = false;
+            return;
+        }
+        const seconds = (time - lastTime) / 1000;
+        lastTime = time;
+        moveBalls(balls, params.speed * seconds, domainWidth());
+        draw();
+        requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+}

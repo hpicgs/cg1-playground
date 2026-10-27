@@ -13,7 +13,7 @@ const params = {
 // TODO: task "Jarvis oder Stucki"
 const dither = floydSteinberg;
 
-// The BT.709 weights for weightedGray (Kapitel 2, Folie 44).
+// The BT.709 weights for weightedGray (Kapitel 2, Graustufen-Umwandlung).
 const wR = 0.2126;
 const wG = 0.7152;
 const wB = 0.0722;

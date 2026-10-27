@@ -5,18 +5,18 @@
 \end{goals}
 
 \begin{prerequisites}
-Kapitel 2 der Vorlesung, vor allem Folie 39–41 (2D-Funktionsplots, Julia- und Mandelbrot-Menge) und Folie 10–11 (HSV, für die optionale Aufgabe). Die Übung „Metabälle“.
+Kapitel 2 der Vorlesung, vor allem die 2D-Funktionsplots mit der Julia- und der Mandelbrot-Menge und das HSV-Farbmodell (für die optionale Aufgabe). Die Übung „Metabälle“.
 
 Weiterführend: die [Kurzreferenz zu OpenGL ES 3.0](https://www.khronos.org/files/opengles3-quick-reference-card.pdf) mit GLSL ES 3.00 auf den letzten Seiten.
 \end{prerequisites}
 
 ## Eine Zahl für jedes Pixel
 
-Wie bei den Funktionsplots auf Kapitel 2, Folie 39 steht jedes Pixel für einen Punkt eines Ausschnitts der Ebene. Hier ist es die Ebene der komplexen Zahlen: Der Punkt $(x, y)$ ist die Zahl $c = x + y\,i$. Die Uniforms `xmin`, `xmax`, `ymin` und `ymax` begrenzen den Ausschnitt, den die Demo zeigt.
+Wie bei den 2D-Funktionsplots in Kapitel 2 steht jedes Pixel für einen Punkt eines Ausschnitts der Ebene. Hier ist es die Ebene der komplexen Zahlen: Der Punkt $(x, y)$ ist die Zahl $c = x + y\,i$. Die Uniforms `xmin`, `xmax`, `ymin` und `ymax` begrenzen den Ausschnitt, den die Demo zeigt.
 
 ## Die Mandelbrot-Menge
 
-Zu jeder Zahl $c$ gehört eine Folge (Folie 41). Sie beginnt bei $z_0 = 0$, und jedes Glied ist das Quadrat des vorigen plus $c$:
+Zu jeder Zahl $c$ gehört eine Folge (Kapitel 2, 2D-Funktionsplots – Julia-Menge). Sie beginnt bei $z_0 = 0$, und jedes Glied ist das Quadrat des vorigen plus $c$:
 
 $$
 z_{n+1} = z_n^2 + c
@@ -31,13 +31,13 @@ Vor deinem Code zeigt die Demo `uv` als Rot und Grün.
 \begin{task}[Mandelbrot-Menge]
 Der Shader steht links im Editor und in \vscode{src/mandelbrot/mandelbrot.frag}[mandelbrot.frag]. `maxIterations` ist $N$.
 
-Berechne in `main` die Zahl $c$ des Fragments wie auf Folie 39. Schreibe die Funktion `mandelbrot`, die die Iterationszahl $n$ von $c$ mit höchstens $N$ Iterationen berechnet, oder 0, wenn die Folge dabei nicht divergiert.
+Berechne in `main` die Zahl $c$ des Fragments wie bei den 2D-Funktionsplots. Schreibe die Funktion `mandelbrot`, die die Iterationszahl $n$ von $c$ mit höchstens $N$ Iterationen berechnet, oder 0, wenn die Folge dabei nicht divergiert.
 
 Färbe das Fragment mit `insideColor`, wenn seine Folge nicht divergiert. Sonst färbe es mit einem Verlauf von Blau nach Rot, bei dem $n / N$ angibt, wie weit es Richtung Rot liegt.
 
-1. Vorhersage: Welche Form hat die Fläche in `insideColor` bei $N = 1$, und welche Farbe haben die Pixel außerhalb? Prüfe.
-2. Ausprobieren: Stelle $N$ nacheinander auf 1, 2, 3, 5, 10, 20, 50 und 100. Wo im Bild wechseln Pixel von `insideColor` in den Verlauf?
-3. Erklären: Was weißt du über eine Zahl $c$, deren Pixel bei $N = 1000$ in `insideColor` erscheint?
+1. Welche Form hat die Fläche in `insideColor` bei $N = 1$, und welche Farbe haben die Pixel außerhalb? Prüfe.
+2. Stelle $N$ nacheinander auf 1, 2, 3, 5, 10, 20, 50 und 100. Wo im Bild wechseln Pixel von `insideColor` in den Verlauf?
+3. Was weißt du über eine Zahl $c$, deren Pixel bei $N = 1000$ in `insideColor` erscheint?
 
 \begin{solution}
 ![Die Mandelbrot-Menge mit N = 100](assets/solution-mandelbrot.jpg)
@@ -46,25 +46,27 @@ Färbe das Fragment mit `insideColor`, wenn seine Folge nicht divergiert. Sonst 
 
 ## Eigene Bilder
 
-Ein Verlauf und eine Farbe für innen sind nur eine Möglichkeit. Dieselbe Folge liefert mit kleinen Änderungen ganz andere Bilder: andere Farben, Farbringe wie bei den Metabällen, die Julia-Mengen von Folie 41 oder Folgen mit einer anderen Potenz. Hier ist Platz, das auszuprobieren.
+Ein Verlauf und eine Farbe für innen sind nur eine Möglichkeit. Dieselbe Folge liefert mit kleinen Änderungen ganz andere Bilder: andere Farben, Farbringe wie bei den Metabällen, die Julia-Mengen aus der Vorlesung oder Folgen mit einer anderen Potenz. Hier ist Platz, das auszuprobieren.
 
 \demo{playground}[playground.frag]
 
 \begin{task}[Deine Mandelbrot-Menge (optional)]
-Gestalte in \vscode{src/playground/playground.frag}[playground.frag] deine eigenen Bilder. Übernimm dazu, was du aus `mandelbrot.frag` brauchst. Bereit stehen `color1`, `color2`, `color3`, `hsv2rgb`, die Größe der Canvas in Pixeln als `size` und `juliaC`: Für die Julia-Menge von Folie 41 ist $c = x_c + y_c\,i$ fest und wird mit den Reglern „Julia c: x“ und „Julia c: y“ eingestellt, und das Pixel bestimmt $z_0$.
+Gestalte in \vscode{src/playground/playground.frag}[playground.frag] deine eigenen Bilder. Übernimm dazu, was du aus `mandelbrot.frag` brauchst. Bereit stehen `color1`, `color2`, `color3`, `hsv2rgb`, die Größe der Canvas in Pixeln als `size` und `juliaC`: Für die Julia-Menge aus der Vorlesung ist $c = x_c + y_c\,i$ fest und wird mit den Reglern „Julia c: x“ und „Julia c: y“ eingestellt, und das Pixel bestimmt $z_0$.
 
-Ideen: ein Verlauf zwischen den Farben mit `mix`, ein Buntton, der sich mit der Iterationszahl wiederholt, $|z|$ für die Punkte der Menge auf den Buntton abbilden wie auf Folie 41, die Julia-Menge zu `juliaC`, mehrere Abtastwerte pro Pixel wie auf Folie 40, wofür `size` die Größe eines Pixels liefert, oder $z^3$ statt $z^2$.
+Ideen: ein Verlauf zwischen den Farben mit `mix`, ein Buntton, der sich mit der Iterationszahl wiederholt, $|z|$ für die Punkte der Menge auf den Buntton abbilden wie in der Vorlesung, die Julia-Menge zu `juliaC`, mehrere Abtastwerte pro Pixel wie bei den 2D-Funktionsplots, wofür `size` die Größe eines Pixels liefert, oder $z^3$ statt $z^2$.
 \end{task}
 
 \begin{summary}
-Ein Fragment-Shader kann für jedes Pixel eine eigene Folge berechnen. Bei der Mandelbrot-Menge steht jedes Pixel für eine komplexe Zahl $c$, und ihre Folge beginnt bei $z_0 = 0$. Ob die Folge konvergiert oder divergiert, entscheidet, ob $c$ zur Menge gehört, und die Iterationszahl bestimmt die Farbe der Punkte außerhalb.
+Beschreibe in eigenen Worten, was du auf dieser Seite gelernt hast und wie du es umgesetzt hast. Save speichert deinen Text in \vscode{summary.md}[summary.md].
+
+\textfield{summary.md}
 \end{summary}
 
 \begin{quiz}
 Bei jeder Frage ist mindestens eine Antwort richtig, aber auch mehrere Antworten können richtig sein.
 
 \begin{question}
-Ein Ausschnitt reicht von $x_{\min} = -2$ bis $x_{\max} = 1$ und wird auf $W = 301$ Pixel abgebildet. Welches $x$ gehört nach Folie 39 zur Pixelspalte 100?
+Ein Ausschnitt reicht von $x_{\min} = -2$ bis $x_{\max} = 1$ und wird auf $W = 301$ Pixel abgebildet. Welches $x$ gehört nach den 2D-Funktionsplots in Kapitel 2 zur Pixelspalte 100?
 - [ ] $-1.5$
 - [ ] $0$
 - [x] $-1$

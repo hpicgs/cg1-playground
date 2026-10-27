@@ -8,16 +8,16 @@
 \end{goals}
 
 \begin{prerequisites}
-Kapitel 2 der Vorlesung, vor allem Folie 9 (RGB), Folie 26–28 (Raster, Pixel, Koordinaten), Folie 31 (Zeilenreihenfolge), Folie 44 (Graustufen), Folie 46 und 48 (Bildoperationen pro Pixel), Folie 47–48 (Quantisierung) und Folie 52–53 (Dithering).
+Kapitel 2 der Vorlesung, vor allem das RGB-Farbmodell, Raster mit Pixeln, Koordinaten und ihrer Implementierung, der PPM-Writer, die Graustufen-Umwandlung, die Farbquantisierung und das Dithering.
 
 Weiterführend: [`ImageData`](https://developer.mozilla.org/de/docs/Web/API/ImageData), [`Uint8ClampedArray`](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray) und [`Float32Array`](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Float32Array) bei MDN.
 \end{prerequisites}
 
 ## Ein Bild ist ein Array
 
-Im Browser liegt ein geladenes Bild als `ImageData` vor. Es hat eine Breite `width`, eine Höhe `height` und ein Array `data`. Das Array ist ein `Uint8ClampedArray` (Folie 28) und hat für jedes Pixel vier Bytes: Rot, Grün, Blau und Alpha, jedes zwischen 0 und 255.
+Im Browser liegt ein geladenes Bild als `ImageData` vor. Es hat eine Breite `width`, eine Höhe `height` und ein Array `data`. Das Array ist ein `Uint8ClampedArray` (Kapitel 2, Raster – Implementierung) und hat für jedes Pixel vier Bytes: Rot, Grün, Blau und Alpha, jedes zwischen 0 und 255.
 
-Die Pixel liegen Zeile für Zeile hintereinander, oben links beginnend (wie beim PPM-Writer auf Folie 31). Pixel $(i, j)$ ist das Pixel in Spalte $i$ und Zeile $j$, und $(0, 0)$ ist oben links. Bei einem Bild der Breite $W$ steht Kanal $c$ (0 für R, 1 für G, 2 für B, 3 für A) von Pixel $(i, j)$ am Index
+Die Pixel liegen Zeile für Zeile hintereinander, oben links beginnend (wie beim PPM-Writer in Kapitel 2). Pixel $(i, j)$ ist das Pixel in Spalte $i$ und Zeile $j$, und $(0, 0)$ ist oben links. Bei einem Bild der Breite $W$ steht Kanal $c$ (0 für R, 1 für G, 2 für B, 3 für A) von Pixel $(i, j)$ am Index
 
 $$
 \text{index} = 4 \cdot (j \cdot W + i) + c.
@@ -25,7 +25,7 @@ $$
 
 Umgekehrt gehört ein Index zum Pixel mit der Nummer $p = \lfloor \text{index} / 4 \rfloor$, also zu Spalte $i = p \bmod W$ und Zeile $j = \lfloor p / W \rfloor$, und zum Kanal $c = \text{index} \bmod 4$.
 
-In Formeln rechnen wir mit Werten in $[0, 1]$ wie auf Folie 9, im Array stehen Bytes von 0 bis 255. Zum Umrechnen teilt man durch 255.
+In Formeln rechnen wir mit Werten in $[0, 1]$ wie beim RGB-Farbmodell in Kapitel 2, im Array stehen Bytes von 0 bis 255. Zum Umrechnen teilt man durch 255.
 
 Die Demo zeigt ein Testbild aus $6 \times 4$ Pixeln und darunter sein Array, eine Bildzeile pro Tabellenzeile. Unter der Maus erscheinen Pixel und Index.
 
@@ -78,8 +78,8 @@ export function invert(image: ImageData): ImageData {
 \begin{task}[Bytes schreiben]
 Die Funktion steht in \vscode{src/invert/invert.ts}[invert.ts].
 
-1. Ausprobieren: Ändere `invert` so, dass nur der Rot-Kanal invertiert wird und Grün und Blau unverändert bleiben. Schreibe vorher auf, welche Bytes die Felder Weiß, Schwarz, Rot und Grau 128 danach haben, und vergleiche mit der Demo.
-2. Ausprobieren: Schreibe 0 statt des kopierten Alpha-Werts. Was erwartest du in der Ausgabe und in den Bytes, und warum? Stelle danach den ursprünglichen Code wieder her.
+1. Ändere `invert` so, dass nur der Rot-Kanal invertiert wird und Grün und Blau unverändert bleiben. Schreibe vorher auf, welche Bytes die Felder Weiß, Schwarz, Rot und Grau 128 danach haben, und vergleiche mit der Demo.
+2. Schreibe 0 statt des kopierten Alpha-Werts. Was erwartest du in der Ausgabe und in den Bytes, und warum? Stelle danach den ursprünglichen Code wieder her.
 
 \begin{solution}
 ![Nur der Rot-Kanal ist invertiert: Weiß wird Cyan, Schwarz wird Rot](assets/solution-invert.jpg)
@@ -88,7 +88,7 @@ Die Funktion steht in \vscode{src/invert/invert.ts}[invert.ts].
 
 ## Graustufen
 
-Ein Grauwert $I$ hat für Rot, Grün und Blau denselben Wert. Folie 44 nennt zwei Gewichtungen:
+Ein Grauwert $I$ hat für Rot, Grün und Blau denselben Wert. Die Graustufen-Umwandlung in Kapitel 2 nennt zwei Gewichtungen:
 
 $$
 I = 0.299\,r + 0.587\,g + 0.114\,b \qquad \text{(YIQ)}
@@ -107,9 +107,9 @@ Sieh dir das rote und das blaue Feld unter dem Foto an. Wirken sie gleich hell?
 \begin{task}[Graustufen]
 Schreibe in \vscode{src/grayscale/gray.ts}[gray.ts] die Funktion `weightedGray` so, dass jedes Pixel den Grauwert $I = w_R\,r + w_G\,g + w_B\,b$ in R, G und B bekommt. Schreibe danach `averageGray` als einen einzigen Aufruf von `weightedGray`. Die Demo ruft `weightedGray` mit den BT.709-Gewichten auf; Gewichte und Farbfelder stehen in \vscode{src/grayscale/index.ts}[grayscale/index.ts].
 
-1. Vorhersage: Welche Bytes zeigen die beiden Graubilder für das rote Feld (#ff0000) und das blaue Feld (#0000ff)? Prüfe mit den Zahlen unter den Bildern.
-2. Vorhersage: Berechne, welcher reine Grünton #00??00 mit BT.709 denselben Grauwert hat wie Rot (±1), und was der Mittelwert für beide Farben liefert. Trage ihn in \vscode{src/grayscale/index.ts}[grayscale/index.ts] als zweite Farbe ein und prüfe.
-3. Ausprobieren: Setze in \vscode{src/grayscale/index.ts}[grayscale/index.ts] alle drei Gewichte auf 1. Was passiert mit hellen Farben, und warum sollten die Gewichte zusammen 1 ergeben? Stelle danach die BT.709-Gewichte und die blaue Farbe wieder her.
+1. Welche Bytes zeigen die beiden Graubilder für das rote Feld (#ff0000) und das blaue Feld (#0000ff)? Prüfe mit den Zahlen unter den Bildern.
+2. Berechne, welcher reine Grünton #00??00 mit BT.709 denselben Grauwert hat wie Rot (±1), und was der Mittelwert für beide Farben liefert. Trage ihn in \vscode{src/grayscale/index.ts}[grayscale/index.ts] als zweite Farbe ein und prüfe.
+3. Setze in \vscode{src/grayscale/index.ts}[grayscale/index.ts] alle drei Gewichte auf 1. Was passiert mit hellen Farben, und warum sollten die Gewichte zusammen 1 ergeben? Stelle danach die BT.709-Gewichte und die blaue Farbe wieder her.
 
 \begin{solution}
 ![Mittelwert und BT.709 im Vergleich, unten ein Farbpaar mit gleichem BT.709-Grauwert](assets/solution-gray.jpg)
@@ -118,13 +118,13 @@ Schreibe in \vscode{src/grayscale/gray.ts}[gray.ts] die Funktion `weightedGray` 
 
 ## Schwarz oder Weiß
 
-Viele Ausgabegeräte kennen nur zwei Zustände pro Punkt, zum Beispiel Laserdrucker, Thermodrucker und E-Paper-Displays. Für sie muss ein Graubild auf Schwarz und Weiß reduziert werden (Halftoning, Folie 52 und 54).
+Viele Ausgabegeräte kennen nur zwei Zustände pro Punkt, zum Beispiel Laserdrucker, Thermodrucker und E-Paper-Displays. Für sie muss ein Graubild auf Schwarz und Weiß reduziert werden (Halftoning, Kapitel 2, Dithering).
 
 \begin{note}[Grauwerte als Float32Array]
 Ab hier hat jedes Pixel nur einen Grauwert in $[0, 1]$, gespeichert in einem `Float32Array` mit dem Index $j \cdot W + i$. Floats sind nötig, weil beim Dithern negative Fehler und Werte über 1 entstehen, die ein `Uint8ClampedArray` abschneiden würde. `new Float32Array(width * height)` legt ein Array voller Nullen an. Die Funktionen geben ein neues Array zurück, in dem 0 schwarz und 1 weiß ist. Das Graubild entsteht mit `weightedGray` aus der Aufgabe Graustufen.
 \end{note}
 
-Der einfachste Weg zu Schwarz und Weiß ist ein Schwellwert $T$. Das ist eine Quantisierung auf ein Bit (Folie 47–48):
+Der einfachste Weg zu Schwarz und Weiß ist ein Schwellwert $T$. Das ist eine Quantisierung auf ein Bit (Kapitel 2, Farbquantisierung):
 
 $$
 I'_{i,j} = \begin{cases} 1 & \text{wenn } I_{i,j} > T \\ 0 & \text{sonst.} \end{cases}
@@ -135,8 +135,8 @@ $$
 \begin{task}[Schwellwert]
 Schreibe `applyThreshold` in \vscode{src/threshold/threshold.ts}[threshold.ts].
 
-1. Vorhersage: Welcher Anteil des Grauverlaufs wird bei $T = 0.3$ weiß? Prüfe in der Demo.
-2. Vorhersage: Ist bei $T = 0$ die Spalte ganz links weiß? Ist bei $T = 1$ die Spalte ganz rechts weiß? Prüfe in der Demo.
+1. Welcher Anteil des Grauverlaufs wird bei $T = 0.3$ weiß? Prüfe in der Demo.
+2. Ist bei $T = 0$ die Spalte ganz links weiß? Ist bei $T = 1$ die Spalte ganz rechts weiß? Prüfe in der Demo.
 
 \begin{solution}
 ![Schwellwert bei T = 0.3: Knapp 70 % des Verlaufs werden weiß](assets/solution-threshold.png)
@@ -147,13 +147,13 @@ Bei jedem Schwellwert gehen Details verloren: Alles unter $T$ wird gleich schwar
 
 ## Error Diffusion nach Floyd–Steinberg
 
-Folie 52 beschreibt die Error Diffusion. Das Bild wird Zeile für Zeile von oben nach unten im „serpentine scanning“ durchlaufen. Jedes Pixel hat beim Besuch einen Wert $\tilde I_{i,j}$, das ist sein ursprünglicher Grauwert plus der Fehler, den es schon von früher besuchten Nachbarn bekommen hat. Daraus entstehen das Ergebnis und der Fehler
+Kapitel 2 beschreibt unter Dithering die Error Diffusion. Das Bild wird Zeile für Zeile von oben nach unten im „serpentine scanning“ durchlaufen. Jedes Pixel hat beim Besuch einen Wert $\tilde I_{i,j}$, das ist sein ursprünglicher Grauwert plus der Fehler, den es schon von früher besuchten Nachbarn bekommen hat. Daraus entstehen das Ergebnis und der Fehler
 
 $$
 I'_{i,j} = \begin{cases} 1 & \text{wenn } \tilde I_{i,j} > T \\ 0 & \text{sonst,} \end{cases} \qquad e = \tilde I_{i,j} - I'_{i,j}.
 $$
 
-Die Folie spricht von der „Differenz zwischen der Originalfarbe und der neuen Farbe“. Mit der Originalfarbe ist der Wert beim Besuch gemeint, also $\tilde I_{i,j}$ und nicht der Grauwert aus der Eingabe. Der Fehler $e$ wird auf die Nachbarn verteilt, die noch nicht besucht wurden, mit den Gewichten von Floyd und Steinberg (Folie 53). $P$ ist das aktuelle Pixel:
+Die Vorlesung spricht von der „Differenz zwischen der Originalfarbe und der neuen Farbe“. Mit der Originalfarbe ist der Wert beim Besuch gemeint, also $\tilde I_{i,j}$ und nicht der Grauwert aus der Eingabe. Der Fehler $e$ wird auf die Nachbarn verteilt, die noch nicht besucht wurden, mit den Gewichten von Floyd und Steinberg (Kapitel 2, Dithering – Fehlerverteilungen). $P$ ist das aktuelle Pixel:
 
 $$
 \begin{array}{ccc} - & P & \frac{7}{16} \\[4pt] \frac{3}{16} & \frac{5}{16} & \frac{1}{16} \end{array}
@@ -172,9 +172,9 @@ Die Funktion bekommt eine Kopie der Grauwerte als `gray`. Der Fehler wird in `gr
 \begin{task}[Error Diffusion nach Floyd–Steinberg]
 Schreibe `floydSteinberg` in \vscode{src/floyd-steinberg/floyd-steinberg.ts}[floyd-steinberg.ts]. Die Demo ruft die Funktion in \vscode{src/floyd-steinberg/index.ts}[floyd-steinberg/index.ts] auf. Schreibe dazu eine Hilfsfunktion, die einem Pixel $(i, j)$ einen Fehleranteil nur dann gibt, wenn es im Bild liegt, also wenn $0 \le i < W$ und $j < H$ gilt.
 
-1. Vorhersage: Rechne die erste Zeile des Testrasters von Hand aus (alle Werte 0.25, $T = 0.5$): Welchen Wert hat jedes Pixel beim Besuch? Schreibe den Code zuerst so, dass alle Zeilen von links nach rechts laufen, und prüfe die erste Zeile; sie ist bei beiden Reihenfolgen gleich. Ergänze dann serpentine scanning. Welches Pixel der zweiten Zeile wird jetzt zuerst besucht, und mit welchem Wert? Prüfe wieder.
-2. Vorhersage: Wie viele Pixel müssten weiß werden, damit das Testraster im Mittel so hell bleibt wie die Eingabe? Zähle in der Demo nach und erkläre die Abweichung.
-3. Ausprobieren: Entferne in deiner Hilfsfunktion die Prüfung $i < W$. Was erwartest du? Was zeigt das Testraster, und warum gibt es keine Fehlermeldung? Stelle die Prüfung danach wieder her.
+1. Rechne die erste Zeile des Testrasters von Hand aus (alle Werte 0.25, $T = 0.5$): Welchen Wert hat jedes Pixel beim Besuch? Schreibe den Code zuerst so, dass alle Zeilen von links nach rechts laufen, und prüfe die erste Zeile; sie ist bei beiden Reihenfolgen gleich. Ergänze dann serpentine scanning. Welches Pixel der zweiten Zeile wird jetzt zuerst besucht, und mit welchem Wert? Prüfe wieder.
+2. Wie viele Pixel müssten weiß werden, damit das Testraster im Mittel so hell bleibt wie die Eingabe? Zähle in der Demo nach und erkläre die Abweichung.
+3. Entferne in deiner Hilfsfunktion die Prüfung $i < W$. Was erwartest du? Was zeigt das Testraster, und warum gibt es keine Fehlermeldung? Stelle die Prüfung danach wieder her.
 
 \begin{solution}
 ![Floyd–Steinberg mit dem Testraster](assets/solution-floyd-steinberg.png)
@@ -182,10 +182,10 @@ Schreibe `floydSteinberg` in \vscode{src/floyd-steinberg/floyd-steinberg.ts}[flo
 \end{task}
 
 \begin{task}[Jarvis oder Stucki (optional)]
-Folie 53 zeigt zwei größere Fehlerverteilungen, Jarvis et al. mit Gewichten in Achtundvierzigsteln und Stucki mit Gewichten in Zweiundvierzigsteln. Beide verteilen den Fehler auf zwölf Nachbarn: zwei in der aktuellen Zeile und je fünf in den beiden Zeilen darunter. Schreibe eine davon als neue Funktion `jarvis` oder `stucki` neben `floydSteinberg` in \vscode{src/floyd-steinberg/floyd-steinberg.ts}[floyd-steinberg.ts], mit deiner Hilfsfunktion und serpentine scanning. Rufe sie in \vscode{src/floyd-steinberg/index.ts}[floyd-steinberg/index.ts] statt `floydSteinberg` auf und stelle den Aufruf danach wieder zurück.
+Kapitel 2 zeigt unter Dithering – Fehlerverteilungen zwei größere Fehlerverteilungen, Jarvis et al. mit Gewichten in Achtundvierzigsteln und Stucki mit Gewichten in Zweiundvierzigsteln. Beide verteilen den Fehler auf zwölf Nachbarn: zwei in der aktuellen Zeile und je fünf in den beiden Zeilen darunter. Schreibe eine davon als neue Funktion `jarvis` oder `stucki` neben `floydSteinberg` in \vscode{src/floyd-steinberg/floyd-steinberg.ts}[floyd-steinberg.ts], mit deiner Hilfsfunktion und serpentine scanning. Rufe sie in \vscode{src/floyd-steinberg/index.ts}[floyd-steinberg/index.ts] statt `floydSteinberg` auf und stelle den Aufruf danach wieder zurück.
 
-1. Vorhersage: Welche Werte haben die ersten beiden Pixel des Testrasters? Prüfe.
-2. Vorhersage: Werden mehr oder weniger Pixel weiß als mit Floyd–Steinberg? Prüfe und erkläre.
+1. Welche Werte haben die ersten beiden Pixel des Testrasters? Prüfe.
+2. Werden mehr oder weniger Pixel weiß als mit Floyd–Steinberg? Prüfe und erkläre.
 3. Vergleiche die Muster im Grauverlauf: Wo bildet Floyd–Steinberg Linien oder Würmer, die mit der größeren Tabelle verschwinden?
 \end{task}
 
@@ -208,8 +208,8 @@ In TypeScript ist die Map ein `number[][]`, ein Array von Zeilen. Der erste Inde
 \begin{task}[Ordered Dithering]
 Schreibe `orderedDithering` in \vscode{src/ordered-dithering/ordered-dithering.ts}[ordered-dithering.ts]. Die Map bekommt die Funktion als Parameter `map`.
 
-1. Vorhersage: Übergib in \vscode{src/ordered-dithering/index.ts}[ordered-dithering/index.ts] vorübergehend die Map `[[0.25, 0.75], [0.75, 0.25]]` statt des Ergebnisses von `bayerMatrix`. Wie sieht der Grauverlauf aus? Prüfe und stelle den Aufruf danach wieder her.
-2. Erklären: Welche Werte liest deine Schleife für Pixel $(i, j)$, und welche braucht `floydSteinberg`? Welches der beiden Verfahren könnte jedes Pixel unabhängig von den anderen berechnen? Vergleiche mit Folie 48: „Es wird keine Nachbarschaft betrachtet, daher parallel ausführbar.“
+1. Übergib in \vscode{src/ordered-dithering/index.ts}[ordered-dithering/index.ts] vorübergehend die Map `[[0.25, 0.75], [0.75, 0.25]]` statt des Ergebnisses von `bayerMatrix`. Wie sieht der Grauverlauf aus? Prüfe und stelle den Aufruf danach wieder her.
+2. Welche Werte liest deine Schleife für Pixel $(i, j)$, und welche braucht `floydSteinberg`? Welches der beiden Verfahren könnte jedes Pixel unabhängig von den anderen berechnen? Vergleiche mit der Uniform Color Quantization in Kapitel 2: „Es wird keine Nachbarschaft betrachtet, daher parallel ausführbar.“
 \end{task}
 
 Eine gute Threshold-Map verteilt die Schwellwerte so, dass bei jeder Helligkeit die weißen Pixel gleichmäßig über die Fläche verstreut sind. Dafür benutzt man zum Beispiel eine Bayer-Matrix. In ganzen Zahlen ist $B_1 = [0]$ und
@@ -223,9 +223,9 @@ Jeder Block der rechten Seite ist eine ganze $n \times n$-Matrix: Zu jedem Eintr
 \begin{task}[Bayer-Matrix]
 Schreibe `bayerMatrix(n)` in \vscode{src/ordered-dithering/ordered-dithering.ts}[ordered-dithering.ts] für Zweierpotenzen $n$, rekursiv oder mit einer Schleife über die Stufen.
 
-1. Vorhersage: Rechne die erste Zeile von $B_4$ und die erste Zeile von $B_8$ von Hand aus. Prüfe mit der Anzeige bei Stufe 2 und 3.
-2. Vorhersage: Bei Stufe 1 ($n = 2$): Welcher Teil des Grauverlaufs wird rein weiß? Gibt es einen rein schwarzen Teil? Wirkt das Foto heller oder dunkler als die Eingabe? Prüfe und erkläre mit dem Mittelwert der Einträge von $M_2$.
-3. Ausprobieren: Liefere stattdessen $(B_n + 0.5) / n^2$. Was ändert sich am Grauverlauf? Stelle danach $B_n / n^2$ wieder her.
+1. Rechne die erste Zeile von $B_4$ und die erste Zeile von $B_8$ von Hand aus. Prüfe mit der Anzeige bei Stufe 2 und 3.
+2. Bei Stufe 1 ($n = 2$): Welcher Teil des Grauverlaufs wird rein weiß? Gibt es einen rein schwarzen Teil? Wirkt das Foto heller oder dunkler als die Eingabe? Prüfe und erkläre mit dem Mittelwert der Einträge von $M_2$.
+3. Liefere stattdessen $(B_n + 0.5) / n^2$. Was ändert sich am Grauverlauf? Stelle danach $B_n / n^2$ wieder her.
 
 \begin{solution}
 ![Ordered Dithering mit der 8 × 8-Bayer-Matrix](assets/solution-bayer.png)
@@ -235,8 +235,8 @@ Schreibe `bayerMatrix(n)` in \vscode{src/ordered-dithering/ordered-dithering.ts}
 \begin{task}[Rauschen als Threshold-Map (optional)]
 Schreibe in \vscode{src/ordered-dithering/ordered-dithering.ts}[ordered-dithering.ts] eine Funktion `noiseMap(n)`, die eine $n \times n$-Map mit Zufallswerten aus `Math.random()` liefert. Rufe sie in \vscode{src/ordered-dithering/index.ts}[ordered-dithering/index.ts] statt `bayerMatrix` auf, mit demselben $n$.
 
-1. Vorhersage: Wie sieht das Bild bei Pixelgröße 3 aus? Was passiert, wenn du einen Regler bewegst? Vergleiche mit Floyd–Steinberg und der Bayer-Matrix.
-2. Vorhersage: Warum siehst du im Foto ein Muster, das sich wiederholt, und was ändert sich mit `noiseMap(256)`?
+1. Wie sieht das Bild bei Pixelgröße 3 aus? Was passiert, wenn du einen Regler bewegst? Vergleiche mit Floyd–Steinberg und der Bayer-Matrix.
+2. Warum siehst du im Foto ein Muster, das sich wiederholt, und was ändert sich mit `noiseMap(256)`?
 \end{task}
 
 \begin{summary}

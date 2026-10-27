@@ -6,14 +6,14 @@
 \end{goals}
 
 \begin{prerequisites}
-Kapitel 2 der Vorlesung, vor allem Folie 10–11 (HSV), Folie 27 (normierte Koordinaten), Folie 39–41 (2D-Funktionsplots) und Folie 48 (uniforme Quantisierung). Die Übung „Bildfilter auf CPU und GPU“ für den Einstieg in Fragment-Shader.
+Kapitel 2 der Vorlesung, vor allem das HSV-Farbmodell, Raster – Koordinatensysteme, die 2D-Funktionsplots und die uniforme Farbquantisierung. Die Übung „Bildfilter auf CPU und GPU“ für den Einstieg in Fragment-Shader.
 
 Weiterführend: die [Kurzreferenz zu OpenGL ES 3.0](https://www.khronos.org/files/opengles3-quick-reference-card.pdf) mit GLSL ES 3.00 auf den letzten Seiten.
 \end{prerequisites}
 
 ## Ein Bild als Funktion
 
-Bisher hat ein Fragment-Shader ein vorhandenes Bild verändert. Er kann ein Bild aber auch ganz neu berechnen: Jedes Pixel bekommt eine Farbe, die nur von seiner Position abhängt. So stellt Kapitel 2, Folie 39 Funktionen mit zwei Variablen dar: Jedes Pixel steht für einen Punkt der Ebene, und der Funktionswert an diesem Punkt bestimmt seine Farbe.
+Bisher hat ein Fragment-Shader ein vorhandenes Bild verändert. Er kann ein Bild aber auch ganz neu berechnen: Jedes Pixel bekommt eine Farbe, die nur von seiner Position abhängt. So stellt Kapitel 2 unter 2D-Funktionsplots Funktionen mit zwei Variablen dar: Jedes Pixel steht für einen Punkt der Ebene, und der Funktionswert an diesem Punkt bestimmt seine Farbe.
 
 Die Bälle auf dieser Seite haben Positionen und Radien in Einheiten der Höhe der Canvas: $y$ läuft von 0 am oberen bis 1 am unteren Rand, und $x$ hat dieselbe Einheit, so dass ein Kreis auf jeder Canvas rund bleibt. `uv` läuft dagegen in beide Richtungen von 0 bis 1. Das Uniform `size` enthält die Größe der Canvas in Pixeln.
 
@@ -34,8 +34,8 @@ Der Shader steht links im Editor und in \vscode{src/one-ball/one-ball.frag}[one-
 
 Berechne zuerst die Position des Fragments in denselben Einheiten wie der Ball, dann den Einfluss des Balls an dieser Position, und färbe das Fragment mit `insideColor`, wenn der Einfluss größer als $T$ ist, sonst mit `outsideColor`.
 
-1. Vorhersage: Welchen Radius hat die gefüllte Kreisscheibe, abhängig von $\lambda$, $r$ und $T$? Wie groß ist sie bei $T = 4$ und bei $T = 0.25$ im Vergleich zu $T = 1$? Prüfe.
-2. Ausprobieren: Nimm vorübergehend `uv` direkt als Position. Welche Form erwartest du für den Ball, und wo ist er, während sein Mittelpunkt bei $x > 1$ liegt? Prüfe und stelle danach deinen Code wieder her.
+1. Welchen Radius hat die gefüllte Kreisscheibe, abhängig von $\lambda$, $r$ und $T$? Wie groß ist sie bei $T = 4$ und bei $T = 0.25$ im Vergleich zu $T = 1$? Prüfe.
+2. Nimm vorübergehend `uv` direkt als Position. Welche Form erwartest du für den Ball, und wo ist er, während sein Mittelpunkt bei $x > 1$ liegt? Prüfe und stelle danach deinen Code wieder her.
 
 \begin{solution}
 ![Ein Ball mit λ = 1 und T = 1](assets/solution-one-ball.jpg)
@@ -57,9 +57,9 @@ Die Bälle stehen im Uniform `balls`: `balls[k].xy` ist der Mittelpunkt und `bal
 
 Schreibe in \vscode{src/metaballs/metaballs.frag}[metaballs.frag] die Funktion `field`, die die Einflüsse aller Bälle an einer Position zu $F$ kombiniert, und benutze sie in `main` wie in der vorigen Aufgabe.
 
-1. Ausprobieren: Kombiniere die Einflüsse einmal mit dem Maximum und einmal mit der Summe. Bei welcher Kombination fließen zwei Bälle zusammen, bevor sich ihre Kreise berühren?
-2. Prüfe: Halte die Bälle mit Geschwindigkeit 0 an, wenn ihre Mittelpunkte etwa eineinhalb Durchmesser voneinander entfernt sind, und erhöhe $\lambda$ langsam, bis sie sich verbinden.
-3. Vorhersage: Welcher Schwellwert $T$ ergibt bei $\lambda = 1.5$ dasselbe Bild wie $T = 1$ bei $\lambda = 1$? Prüfe mit Geschwindigkeit 0.
+1. Kombiniere die Einflüsse einmal mit dem Maximum und einmal mit der Summe. Bei welcher Kombination fließen zwei Bälle zusammen, bevor sich ihre Kreise berühren?
+2. Halte die Bälle mit Geschwindigkeit 0 an, wenn ihre Mittelpunkte etwa eineinhalb Durchmesser voneinander entfernt sind, und erhöhe $\lambda$ langsam, bis sie sich verbinden.
+3. Welcher Schwellwert $T$ ergibt bei $\lambda = 1.5$ dasselbe Bild wie $T = 1$ bei $\lambda = 1$? Prüfe mit Geschwindigkeit 0.
 
 \begin{solution}
 ![Fünf Metabälle mit λ = 1 und T = 1](assets/solution-metaballs.jpg)
@@ -68,7 +68,7 @@ Schreibe in \vscode{src/metaballs/metaballs.frag}[metaballs.frag] die Funktion `
 
 ## Psychedelisch
 
-Statt nur innen und außen zu unterscheiden, kann man $F$ auch über die Farbe zeigen. Dafür eignet sich HSV (Kapitel 2, Folie 10): Der Buntton (Hue) ist ein Winkel auf dem Farbkreis, Sättigung und Helligkeit bleiben dabei fest. Folie 41 färbt die Julia-Menge, indem sie einen Wert auf den Buntton abbildet. Die Shader ab hier enthalten die Umrechnung von Folie 11 als Funktion `hsv2rgb(h, s, v)`, mit $h$ von 0 bis knapp 1 statt in Grad.
+Statt nur innen und außen zu unterscheiden, kann man $F$ auch über die Farbe zeigen. Dafür eignet sich HSV (Kapitel 2, HSV-Farbmodell): Der Buntton (Hue) ist ein Winkel auf dem Farbkreis, Sättigung und Helligkeit bleiben dabei fest. Die 2D-Funktionsplots in Kapitel 2 färben die Julia-Menge, indem sie einen Wert auf den Buntton abbilden. Die Shader ab hier enthalten die Umrechnung von HSV in RGB aus Kapitel 2 als Funktion `hsv2rgb(h, s, v)`, mit $h$ von 0 bis knapp 1 statt in Grad.
 
 Vor deinem Code zeigt die Demo den Buntton $h$ von 0 am linken bis knapp 1 am rechten Rand.
 
@@ -79,9 +79,9 @@ Vor deinem Code zeigt die Demo den Buntton $h$ von 0 am linken bis knapp 1 am re
 
 Schreibe \vscode{src/psychedelic/psychedelic.frag}[psychedelic.frag] so, dass deine Metabälle wie im Bild aussehen. Übernimm dazu deine Funktion `field` aus `metaballs.frag`.
 
-1. Vorhersage: Welche Größe, die du aus $F$ berechnen kannst, ist an den Mittelpunkten der Bälle 0 und wächst nach außen? Wie wird daraus ein Buntton, der sich wiederholt?
-2. Erklären: Warum gibt es zwischen zwei Ringen keine harte Kante, obwohl der Buntton dort von fast 1 auf 0 springt?
-3. Ausprobieren: Stelle Anzahl 1 ein und verdopple $\lambda$. Wie ändern sich die Ringe, und was passiert mit den Mustern weit weg vom Ball? Denk an Folie 27: Ein Pixel ist ein Abtastwert.
+1. Welche Größe, die du aus $F$ berechnen kannst, ist an den Mittelpunkten der Bälle 0 und wächst nach außen? Wie wird daraus ein Buntton, der sich wiederholt?
+2. Warum gibt es zwischen zwei Ringen keine harte Kante, obwohl der Buntton dort von fast 1 auf 0 springt?
+3. Stelle Anzahl 1 ein und verdopple $\lambda$. Wie ändern sich die Ringe, und was passiert mit den Mustern weit weg vom Ball? Denk an Raster – Koordinatensysteme in Kapitel 2: Ein Pixel ist ein Abtastwert.
 \end{task}
 
 ## Eigene Farben
@@ -91,11 +91,13 @@ Innen und außen und die Farbringe sind nur zwei von vielen Möglichkeiten. $F$ 
 \demo{palette}[palette.frag]
 
 \begin{task}[Deine Farbgebung (optional)]
-Gestalte in \vscode{src/palette/palette.frag}[palette.frag] deine eigenen Metabälle. Übernimm dazu deine Funktion `field`; die Farben `color1`, `color2` und `color3`, $T$ und $\lambda$ stehen als Uniforms bereit. Ideen: Bänder durch uniforme Quantisierung (Folie 48), ein Verlauf zwischen den Farben mit `mix`, $F$ als Helligkeit in HSV, Ordered Dithering wie in der Übung „Graustufen und Dithering“ oder eine eigene Formel für den Einfluss eines Balls.
+Gestalte in \vscode{src/palette/palette.frag}[palette.frag] deine eigenen Metabälle. Übernimm dazu deine Funktion `field`; die Farben `color1`, `color2` und `color3`, $T$ und $\lambda$ stehen als Uniforms bereit. Ideen: Bänder durch uniforme Quantisierung (Kapitel 2, Farbquantisierung), ein Verlauf zwischen den Farben mit `mix`, $F$ als Helligkeit in HSV, Ordered Dithering wie in der Übung „Graustufen und Dithering“ oder eine eigene Formel für den Einfluss eines Balls.
 \end{task}
 
 \begin{summary}
-Ein Fragment-Shader kann ein Bild aus einer Funktion der Position berechnen. Damit Kreise rund bleiben, braucht die Position auf beiden Achsen dieselbe Einheit. Bei Metabällen hat jeder Ball einen Einfluss, der nach außen abnimmt, und gefüllt wird, wo die kombinierten Einflüsse einen Schwellwert überschreiten. Kombiniert man sie geeignet, fließen nahe Bälle wie Tropfen ineinander. Bildet man einen Wert periodisch auf den Buntton ab, entstehen Farbringe ohne harte Kante, weil der Farbkreis geschlossen ist.
+Beschreibe in eigenen Worten, was du auf dieser Seite gelernt hast und wie du es umgesetzt hast. Save speichert deinen Text in \vscode{summary.md}[summary.md].
+
+\textfield{summary.md}
 \end{summary}
 
 \begin{quiz}
@@ -142,7 +144,7 @@ Welche Werte sind in allen Fragmenten eines Bildes gleich?
 \end{question}
 
 \begin{question}
-Welche Farbe ergibt die Umrechnung von Folie 11 für $H = 180°$, $S = 1$ und $V = 1$?
+Welche Farbe ergibt die Umrechnung von HSV in RGB aus Kapitel 2 für $H = 180°$, $S = 1$ und $V = 1$?
 - [ ] Rot
 - [ ] Gelb
 - [x] Cyan

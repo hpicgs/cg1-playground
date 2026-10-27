@@ -19,7 +19,7 @@ in vec2 uv;
 
 out vec4 fragColor;
 
-// HSV to RGB as on Kapitel 2, Folie 11,
+// HSV to RGB as in Kapitel 2 (Umwandlung HSV in RGB),
 // with h in [0, 1) instead of degrees.
 vec3 hsv2rgb(float h, float s, float v) {
     float sector = floor(6.0 * h);

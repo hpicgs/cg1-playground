@@ -9,3 +9,6 @@ dist/
 # Editor and OS files
 .DS_Store
 Thumbs.db
+
+# Summaries students write on the pages
+exercises/*/summary.md

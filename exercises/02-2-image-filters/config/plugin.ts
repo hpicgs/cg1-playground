@@ -13,10 +13,21 @@ const contentFile = /(^|[\\/])(content\.md|meta\.json|config[\\/]macros\.json)$/
 /** Shader files inside a demo folder: `src/<demo>/<file>.vert|frag`. */
 const shaderFile = /[\\/]src[\\/][\w-]+[\\/][\w.-]+\.(vert|frag)$/;
 
+/** Markdown files that a text field may save into, like `summary.md`. */
+const textFile = /[\\/][\w-]+\.md$/;
+
 /** Request body of the save endpoint: the new source and the text the editor loaded. */
 type SaveRequest = {
     page: string;
     demo: string;
+    file: string;
+    source: string;
+    loaded: string;
+};
+
+/** Request body of the text save endpoint: the new text and the text the field loaded. */
+type SaveTextRequest = {
+    page: string;
     file: string;
     source: string;
     loaded: string;
@@ -51,7 +62,10 @@ export function playground(): Plugin {
                 next();
             });
 
-            // Save endpoint for the shader editor.
+            // Save endpoints for the shader editor and for text fields.
+            server.middlewares.use("/__playground/save-text", (request, response) => {
+                void saveText(root, request, response);
+            });
             server.middlewares.use("/__playground/save", (request, response) => {
                 void save(root, request, response);
             });
@@ -126,6 +140,15 @@ export function playground(): Plugin {
                 }
                 return [];
             }
+            if (textFile.test(file)) {
+                if (this.environment.name === "client") {
+                    server.ws.send("playground:text", {
+                        path: `/${relative(root, file).replaceAll("\\", "/")}`,
+                        source: await read(),
+                    });
+                }
+                return [];
+            }
         },
     };
 }
@@ -163,26 +186,8 @@ async function save(
     request: IncomingMessage,
     response: ServerResponse,
 ): Promise<void> {
-    function answer(status: number, body: object): void {
-        response.statusCode = status;
-        response.setHeader("Content-Type", "application/json");
-        response.end(JSON.stringify(body));
-    }
-
-    if (request.method !== "POST" || request.headers.origin !== `http://${request.headers.host}`) {
-        answer(403, { error: "Anfrage nicht erlaubt" });
-        return;
-    }
-
-    let text = "";
-    for await (const chunk of request) {
-        text += String(chunk);
-    }
-    let body: SaveRequest;
-    try {
-        body = JSON.parse(text) as SaveRequest;
-    } catch {
-        answer(400, { error: "Ungültige Anfrage" });
+    const body = (await readRequest(request, response)) as SaveRequest | undefined;
+    if (body === undefined) {
         return;
     }
 
@@ -192,17 +197,89 @@ async function save(
         !editableShaders(folder).includes(`${body.demo}/${body.file}`) ||
         typeof body.source !== "string"
     ) {
-        answer(403, { error: "Diese Datei darf nicht gespeichert werden" });
+        answer(response, 403, { error: "Diese Datei darf nicht gespeichert werden" });
         return;
     }
 
     const path = join(folder, "src", body.demo, body.file);
     if (readFileSync(path, "utf8").replaceAll("\r\n", "\n") !== body.loaded) {
-        answer(409, { error: "Die Datei wurde inzwischen geändert" });
+        answer(response, 409, { error: "Die Datei wurde inzwischen geändert" });
         return;
     }
     writeFileSync(path, body.source);
-    answer(200, {});
+    answer(response, 200, {});
+}
+
+/**
+ * Writes the Markdown file of a text field, e.g. `summary.md`.
+ *
+ * @remarks Accepts only same-origin requests and only files declared in the exercise's
+ *   `\textfield` lines. A missing file counts as empty. Refuses with 409 if the file changed
+ *   since the field loaded it.
+ * @param root - The server's root folder.
+ * @param request - POST request with a {@link SaveTextRequest} body.
+ * @param response - Answers 200, or an error status with a message.
+ */
+async function saveText(
+    root: string,
+    request: IncomingMessage,
+    response: ServerResponse,
+): Promise<void> {
+    const body = (await readRequest(request, response)) as SaveTextRequest | undefined;
+    if (body === undefined) {
+        return;
+    }
+
+    const folder = exerciseFolder(root, String(body.page));
+    if (
+        folder === undefined ||
+        !textFields(folder).includes(body.file) ||
+        typeof body.source !== "string"
+    ) {
+        answer(response, 403, { error: "Diese Datei darf nicht gespeichert werden" });
+        return;
+    }
+
+    const path = join(folder, body.file);
+    const current = existsSync(path) ? readFileSync(path, "utf8").replaceAll("\r\n", "\n") : "";
+    if (current !== body.loaded) {
+        answer(response, 409, { error: "Die Datei wurde inzwischen geändert" });
+        return;
+    }
+    writeFileSync(path, body.source);
+    answer(response, 200, {});
+}
+
+/**
+ * Reads the JSON body of a save request.
+ *
+ * @remarks Answers 403 for requests from other origins and 400 for broken JSON.
+ * @param request - The POST request.
+ * @param response - Used to answer when the request is refused.
+ * @returns The parsed body, or `undefined` if the request was refused.
+ */
+async function readRequest(request: IncomingMessage, response: ServerResponse): Promise<unknown> {
+    if (request.method !== "POST" || request.headers.origin !== `http://${request.headers.host}`) {
+        answer(response, 403, { error: "Anfrage nicht erlaubt" });
+        return undefined;
+    }
+
+    let text = "";
+    for await (const chunk of request) {
+        text += String(chunk);
+    }
+    try {
+        return JSON.parse(text) as unknown;
+    } catch {
+        answer(response, 400, { error: "Ungültige Anfrage" });
+        return undefined;
+    }
+}
+
+function answer(response: ServerResponse, status: number, body: object): void {
+    response.statusCode = status;
+    response.setHeader("Content-Type", "application/json");
+    response.end(JSON.stringify(body));
 }
 
 /**
@@ -222,6 +299,17 @@ function editableShaders(folder: string): string[] {
         }
     }
     return files;
+}
+
+/**
+ * Lists the files an exercise declares as text fields.
+ *
+ * @param folder - Absolute exercise folder.
+ * @returns File names like `summary.md`, from lines like `\textfield{summary.md}`.
+ */
+function textFields(folder: string): string[] {
+    const content = readFileSync(join(folder, "content.md"), "utf8");
+    return [...content.matchAll(/^\\textfield\{([\w-]+\.md)\}\s*$/gm)].map((match) => match[1]);
 }
 
 function readJson(path: string): unknown {

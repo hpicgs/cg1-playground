@@ -6,7 +6,7 @@ import * as renderer from "./renderer";
 // Colours of the two patches below the photo.
 const patches = ["#ff0000", "#0000ff"];
 
-// The weights for weightedGray: BT.709 (Kapitel 2, Folie 44).
+// The weights for weightedGray: BT.709 (Kapitel 2, Graustufen-Umwandlung).
 const wR = 0.2126;
 const wG = 0.7152;
 const wB = 0.0722;

@@ -196,6 +196,61 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(".copy-path"))
     });
 }
 
+// Text fields: Save writes the text into its Markdown file in the exercise folder. Each field
+// remembers the text last loaded or saved, so the server can refuse a save over a newer file.
+const textFields: {
+    path: string;
+    area: HTMLTextAreaElement;
+    saved: string;
+    status: HTMLElement;
+}[] = [];
+for (const box of document.querySelectorAll<HTMLElement>(".textfield")) {
+    const file = box.dataset.file ?? "";
+    const area = box.querySelector("textarea");
+    if (area === null) {
+        continue;
+    }
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "Save";
+    const status = document.createElement("span");
+    const bar = document.createElement("div");
+    bar.className = "textfield-bar";
+    bar.append(button, file, status);
+    box.append(bar);
+
+    const field = {
+        path: new URL(`./${file}`, location.href).pathname,
+        area,
+        saved: area.value,
+        status,
+    };
+    textFields.push(field);
+
+    area.addEventListener("input", () => {
+        status.textContent = area.value === field.saved ? "" : "nicht gespeichert";
+        status.classList.remove("failed");
+    });
+    button.addEventListener("click", () => {
+        const source = area.value;
+        void fetch("/__playground/save-text", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ page: location.pathname, file, source, loaded: field.saved }),
+        }).then(async (response) => {
+            if (response.ok) {
+                field.saved = source;
+                status.textContent = "gespeichert";
+                status.classList.remove("failed");
+            } else {
+                const result = (await response.json()) as { error?: string };
+                status.textContent = result.error ?? "Speichern fehlgeschlagen";
+                status.classList.add("failed");
+            }
+        });
+    });
+}
+
 // Self-tests: Auswerten colours the checked options, marks each question and counts the
 // right ones. A question is right if exactly its right options are checked, and partly right
 // if at least one of its right options is checked.
@@ -291,6 +346,23 @@ import.meta.hot?.on("playground:shader", (event: { path: string; source: string 
             if (demo.editor?.setSource(file, event.source) ?? true) {
                 rebuild(demo);
             }
+        }
+    }
+});
+
+// A text field's file changed on disk: the IDE wins over unsaved text in the browser. A change
+// that is the field's own save is ignored.
+import.meta.hot?.on("playground:text", (event: { path: string; source: string }) => {
+    for (const field of textFields) {
+        const text = event.source.replaceAll("\r\n", "\n");
+        if (event.path === field.path && text !== field.saved) {
+            const hadEdits = field.area.value !== field.saved;
+            field.area.value = text;
+            field.saved = text;
+            field.status.textContent = hadEdits
+                ? "in der IDE geändert und neu geladen; ungespeicherte Änderungen sind verworfen"
+                : "in der IDE geändert und neu geladen";
+            field.status.classList.remove("failed");
         }
     }
 });

@@ -256,6 +256,45 @@ figcaption {
     cursor: pointer;
 }
 
+/* Text fields that save into a Markdown file of the exercise. */
+.textfield textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 12rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--background);
+    color: var(--text);
+    font:
+        0.9rem/1.5 ui-monospace,
+        monospace;
+    resize: vertical;
+}
+
+.textfield-bar {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.textfield-bar button {
+    padding: 0.2rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.textfield-bar .failed {
+    color: var(--error);
+}
+
 /* Tasks and example solutions. */
 .task {
     margin: 2rem 0;

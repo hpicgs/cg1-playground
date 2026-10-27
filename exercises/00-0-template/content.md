@@ -71,7 +71,9 @@ Die Demo zeichnet die beiden Endpunkte in derselben Farbe wie alle anderen Pixel
 \end{task}
 
 \begin{summary}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Beschreibe in eigenen Worten, was du auf dieser Seite gelernt hast und wie du es umgesetzt hast. Save speichert deinen Text in \vscode{summary.md}[summary.md].
+
+\textfield{summary.md}
 \end{summary}
 
 \begin{quiz}

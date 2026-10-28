@@ -66,7 +66,7 @@ Beschreibe in eigenen Worten, was du auf dieser Seite gelernt hast und wie du es
 Bei jeder Frage ist mindestens eine Antwort richtig, aber auch mehrere Antworten können richtig sein.
 
 \begin{question}
-Ein Ausschnitt reicht von $x_{\min} = -2$ bis $x_{\max} = 1$ und wird auf $W = 301$ Pixel abgebildet. Welches $x$ gehört nach den 2D-Funktionsplots in Kapitel 2 zur Pixelspalte 100?
+Ein Ausschnitt reicht von $x_{\text{min}} = -2$ bis $x_{\text{max}} = 1$ und wird auf $W = 301$ Pixel abgebildet. Welches $x$ gehört nach den 2D-Funktionsplots in Kapitel 2 zur Pixelspalte 100?
 - [ ] $-1.5$
 - [ ] $0$
 - [x] $-1$

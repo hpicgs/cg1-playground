@@ -1,5 +1,10 @@
+import GUI from "lil-gui";
 import flowerUrl from "../../assets/flower.png";
 import * as renderer from "./renderer";
+
+const params = {
+    saltAndPepper: 0,
+};
 
 // The photo is scaled to this width when it is loaded.
 const photoWidth = 480;
@@ -12,11 +17,14 @@ const testRows = [
     [60, 60, 60, 120, 120, 120],
 ];
 
-// Sizes in CSS pixels: the margin, and the column on the right with the test image.
+// Sizes in CSS pixels: the margin, and the column on the right with the controls on top and
+// the test image below them.
 const padding = 16;
 const sideWidth = 245;
+const controlsHeight = 70;
 
 let canvas: HTMLCanvasElement;
+let photo: ImageData;
 let photoLayer: renderer.Layer;
 let testLayer: renderer.Layer;
 
@@ -28,8 +36,12 @@ export async function start(
     canvas = element;
     const gl = renderer.init(canvas, sources);
 
-    photoLayer = renderer.createLayer(await loadPhoto());
+    photo = await loadPhoto();
+    photoLayer = renderer.createLayer(photo);
     testLayer = renderer.createLayer(makeTestImage());
+
+    const gui = new GUI({ container: controls, title: "Eigener Filter" });
+    gui.add(params, "saltAndPepper", 0, 0.2, 0.01).name("Salt & Pepper").onChange(changeNoise);
 
     // Keep the drawing buffer at the canvas's displayed size (in device pixels).
     function resize(): void {
@@ -84,8 +96,22 @@ async function loadPhoto(): Promise<ImageData> {
     return context.getImageData(0, 0, width, height);
 }
 
+// Sets a new random share of the photo's pixels to black or white, each with the same
+// probability (salt and pepper noise).
+function changeNoise(): void {
+    const noisy = new ImageData(new Uint8ClampedArray(photo.data), photo.width, photo.height);
+    for (let index = 0; index < photo.data.length; index += 4) {
+        if (Math.random() < params.saltAndPepper) {
+            const value = Math.random() < 0.5 ? 0 : 255;
+            noisy.data.set([value, value, value], index);
+        }
+    }
+    renderer.setImage(photoLayer, noisy);
+    draw();
+}
+
 // Where the photo and the test image go, in device pixels. The photo fills the space on the
-// left; the test image sits at the top of the side column.
+// left; the test image sits in the side column below the controls.
 function layout(): { photo: renderer.Rect; test: renderer.Rect } {
     const dpr = window.devicePixelRatio || 1;
     const margin = Math.round(padding * dpr);
@@ -105,7 +131,7 @@ function layout(): { photo: renderer.Rect; test: renderer.Rect } {
     const cellSize = Math.floor(side / testLayer.width);
     const test = {
         left: canvas.width - margin / 2 - side,
-        top: margin,
+        top: Math.round(controlsHeight * dpr) + margin,
         width: cellSize * testLayer.width,
         height: cellSize * testLayer.height,
     };

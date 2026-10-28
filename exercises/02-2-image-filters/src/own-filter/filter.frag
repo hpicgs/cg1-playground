@@ -1,6 +1,6 @@
 #version 300 es
 
-// Your own convolution.
+// Your own filter.
 
 precision highp float;
 

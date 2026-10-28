@@ -5,7 +5,7 @@
 \end{goals}
 
 \begin{prerequisites}
-Kapitel 2 der Vorlesung, vor allem die 2D-Funktionsplots mit der Julia- und der Mandelbrot-Menge und das HSV-Farbmodell (für die optionale Aufgabe). Die Übung „Metabälle“.
+Kapitel 2 der Vorlesung, vor allem die 2D-Funktionsplots mit der Julia- und der Mandelbrot-Menge. Die Übung „Metabälle“.
 
 Weiterführend: die [Kurzreferenz zu OpenGL ES 3.0](https://www.khronos.org/files/opengles3-quick-reference-card.pdf) mit GLSL ES 3.00 auf den letzten Seiten.
 \end{prerequisites}
@@ -51,7 +51,7 @@ Ein Verlauf und eine Farbe für innen sind nur eine Möglichkeit. Dieselbe Folge
 \demo{playground}[playground.frag]
 
 \begin{task}[Deine Mandelbrot-Menge (optional)]
-Gestalte in \vscode{src/playground/playground.frag}[playground.frag] deine eigenen Bilder. Übernimm dazu, was du aus `mandelbrot.frag` brauchst. Bereit stehen `color1`, `color2`, `color3`, `hsv2rgb`, die Größe der Canvas in Pixeln als `size` und `juliaC`: Für die Julia-Menge aus der Vorlesung ist $c = x_c + y_c\,i$ fest und wird mit den Reglern „Julia c: x“ und „Julia c: y“ eingestellt, und das Pixel bestimmt $z_0$.
+Gestalte in \vscode{src/playground/playground.frag}[playground.frag] deine eigenen Bilder. Übernimm dazu, was du aus `mandelbrot.frag` brauchst, und für Farbringe oder einen wechselnden Buntton eventuell deine Farbgebung aus `psychedelic.frag` der Übung „Metabälle“. Bereit stehen `color1`, `color2`, `color3`, die Größe der Canvas in Pixeln als `size` und `juliaC`: Für die Julia-Menge aus der Vorlesung ist $c = x_c + y_c\,i$ fest und wird mit den Reglern „Julia c: x“ und „Julia c: y“ eingestellt, und das Pixel bestimmt $z_0$.
 
 Ideen: ein Verlauf zwischen den Farben mit `mix`, ein Buntton, der sich mit der Iterationszahl wiederholt, $|z|$ für die Punkte der Menge auf den Buntton abbilden wie in der Vorlesung, die Julia-Menge zu `juliaC`, mehrere Abtastwerte pro Pixel wie bei den 2D-Funktionsplots, wofür `size` die Größe eines Pixels liefert, oder $z^3$ statt $z^2$.
 \end{task}

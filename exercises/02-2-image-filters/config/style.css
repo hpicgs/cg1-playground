@@ -578,7 +578,7 @@ table.stepper-state {
 .demo[data-demo="gray-shader"],
 .demo[data-demo="box-blur-gpu"],
 .demo[data-demo="laplace-gpu"],
-.demo[data-demo="convolution"] {
+.demo[data-demo="own-filter"] {
     --demo-width: min(96vw, 84rem);
     --demo-aspect: 2 / 1;
 }

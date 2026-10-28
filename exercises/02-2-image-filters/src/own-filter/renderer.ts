@@ -48,11 +48,7 @@ export function init(
 // Compiles both shaders and links them. If this fails, the old program stays.
 export function setShaders(sources: Record<string, string>): void {
     const vertexShader = compile(gl.VERTEX_SHADER, "quad.vert", sources["quad.vert"]);
-    const fragmentShader = compile(
-        gl.FRAGMENT_SHADER,
-        "convolution.frag",
-        sources["convolution.frag"],
-    );
+    const fragmentShader = compile(gl.FRAGMENT_SHADER, "filter.frag", sources["filter.frag"]);
 
     const next = gl.createProgram();
     gl.attachShader(next, vertexShader);
@@ -117,6 +113,22 @@ export function createLayer(image: ImageData): Layer {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
     return { texture, width: image.width, height: image.height };
+}
+
+// Replaces the image of a layer by a new one of the same size.
+export function setImage(layer: Layer, image: ImageData): void {
+    gl.bindTexture(gl.TEXTURE_2D, layer.texture);
+    gl.texSubImage2D(
+        gl.TEXTURE_2D,
+        0,
+        0,
+        0,
+        image.width,
+        image.height,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        image.data,
+    );
 }
 
 // Fills the whole canvas with the background colour.

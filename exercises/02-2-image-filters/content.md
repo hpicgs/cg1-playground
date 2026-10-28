@@ -189,17 +189,14 @@ Die Vorlesung nennt den Laplace-Filter rauschempfindlich und empfiehlt, vorher z
 2. Wie verändern sich mit Glättung die Körnung und die Kanten im Foto und im Testbild? Prüfe. Stelle danach deinen Laplace-Filter ohne Glättung wieder her.
 \end{task}
 
-## Eigene Bildfaltungen
+## Eigene Filter
 
-Kapitel 2 zeigt unter Bildfaltung weitere Kerne: Gauss-Filter, Motion-Blur, Embossing und Sharpening.
+Kapitel 2 zeigt unter Bildfaltung weitere Kerne: Gauss-Filter, Motion-Blur, Embossing und Sharpening. Daneben gibt es nichtlineare Filter (Kapitel 2, Bildfilterung – Nichtlineare Filter), die sich nicht als Faltung schreiben lassen, etwa Erosion, Dilation und den Median-Filter. Hier ist Platz, beides auszuprobieren.
 
-\demo{convolution}[convolution.frag]
+\demo{own-filter}[filter.frag]
 
-\begin{task}[Eigene Bildfaltung (optional)]
-Schreibe in \vscode{src/convolution/convolution.frag}[convolution.frag] eine Bildfaltung mit einem Kern deiner Wahl, zum Beispiel einem aus der Vorlesung oder dem Schärfen $I' = I + \alpha \cdot L$ beim Laplace-Filter. Lies $K_{k,l}$ wie in der Formel oben: Spalte $k$ und Zeile $l$, vom Mittelpunkt aus.
-
-1. Die Gewichte des Embossing-Kerns ergeben zusammen 0. Was zeigt er in einer gleichmäßigen Fläche, und was brauchst du wie beim Laplace-Filter, damit man etwas sieht? Prüfe.
-2. Sage für jeden weiteren Kern vorher, was er mit dem Testbild macht, und prüfe danach.
+\begin{task}[Dein eigener Filter (optional)]
+Schreibe in \vscode{src/own-filter/filter.frag}[filter.frag] einen Filter deiner Wahl. Der Regler „Salt & Pepper“ setzt einen Anteil der Pixel im Foto auf Schwarz oder Weiß. Ideen: ein Kern aus der Vorlesung, das Schärfen $I' = I + \alpha \cdot L$ beim Laplace-Filter, Embossing mit einem Versatz wie $\beta$ beim Laplace-Filter, Erosion oder Dilation über die Helligkeit der Nachbarn, ein Median-Filter oder ein ganz eigener Kern.
 \end{task}
 
 \begin{summary}

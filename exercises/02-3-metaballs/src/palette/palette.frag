@@ -17,31 +17,6 @@ in vec2 uv;
 
 out vec4 fragColor;
 
-// HSV to RGB as in Kapitel 2 (Umwandlung HSV in RGB),
-// with h in [0, 1) instead of degrees.
-vec3 hsv2rgb(float h, float s, float v) {
-    float sector = floor(6.0 * h);
-    float f = 6.0 * h - sector;
-    float p = v * (1.0 - s);
-    float q = v * (1.0 - s * f);
-    float t = v * (1.0 - s * (1.0 - f));
-
-    // h_i on the slide: the sixth of the circle h lies in.
-    int hi = int(sector);
-    if (hi == 0) {
-        return vec3(v, t, p);
-    } else if (hi == 1) {
-        return vec3(q, v, p);
-    } else if (hi == 2) {
-        return vec3(p, v, t);
-    } else if (hi == 3) {
-        return vec3(p, q, v);
-    } else if (hi == 4) {
-        return vec3(t, p, v);
-    }
-    return vec3(v, p, q);
-}
-
 // F at the position p.
 float field(vec2 p) {
     // TODO: implement your code here.

@@ -2,11 +2,11 @@
 - In jedem Fragment eine Funktion der Position auswerten und den Wert als Farbe ausgeben.
 - Pixelkoordinaten so umrechnen, dass Kreise auf jeder Canvas rund bleiben.
 - Das Prinzip von Metabällen erklären und eine Kombination für mehrere Bälle finden.
-- Einen Wert mit HSV auf eine Farbe abbilden.
+- Ein passendes Farbmodell wählen, um einen Wert auf eine Farbe abzubilden.
 \end{goals}
 
 \begin{prerequisites}
-Kapitel 2 der Vorlesung, vor allem das HSV-Farbmodell, Raster – Koordinatensysteme, die 2D-Funktionsplots und die uniforme Farbquantisierung. Die Übung „Bildfilter auf CPU und GPU“ für den Einstieg in Fragment-Shader.
+Kapitel 2 der Vorlesung, vor allem Farbmodelle und Farbräume, Raster – Koordinatensysteme, die 2D-Funktionsplots und die uniforme Farbquantisierung. Die Übung „Bildfilter auf CPU und GPU“ für den Einstieg in Fragment-Shader.
 
 Weiterführend: die [Kurzreferenz zu OpenGL ES 3.0](https://www.khronos.org/files/opengles3-quick-reference-card.pdf) mit GLSL ES 3.00 auf den letzten Seiten.
 \end{prerequisites}
@@ -68,9 +68,11 @@ Schreibe in \vscode{src/metaballs/metaballs.frag}[metaballs.frag] die Funktion `
 
 ## Psychedelisch
 
-Statt nur innen und außen zu unterscheiden, kann man $F$ auch über die Farbe zeigen. Dafür eignet sich HSV (Kapitel 2, HSV-Farbmodell): Der Buntton (Hue) ist ein Winkel auf dem Farbkreis, Sättigung und Helligkeit bleiben dabei fest. Die 2D-Funktionsplots in Kapitel 2 färben die Julia-Menge, indem sie einen Wert auf den Buntton abbilden. Die Shader ab hier enthalten die Umrechnung von HSV in RGB aus Kapitel 2 als Funktion `hsv2rgb(h, s, v)`, mit $h$ von 0 bis knapp 1 statt in Grad.
+Statt nur innen und außen zu unterscheiden, kann man $F$ auch über die Farbe zeigen. Die 2D-Funktionsplots in Kapitel 2 nennen das Farbkodierung: Ein Farbschema bildet den Funktionswert eines Pixels auf eine Farbe ab. Es kann zum Beispiel Bereiche von Werten mit verschiedenen Farben unterscheiden, zwischen Farben interpolieren oder einen Wert auf Graustufen abbilden.
 
-Vor deinem Code zeigt die Demo den Buntton $h$ von 0 am linken bis knapp 1 am rechten Rand.
+Eine Farbe ist ein Punkt in einem Farbmodell und wird durch drei Koordinaten beschrieben (Kapitel 2, Farbmodell und Farbraum). Ein Farbschema legt fest, welche Koordinaten sich mit dem Wert ändern und welche fest bleiben. Welche Farbfolge dabei entsteht, hängt davon ab, in welchem Farbmodell man das tut.
+
+Vor deinem Code zeigt die Demo `uv` als Rot und Grün.
 
 \demo{psychedelic}[psychedelic.frag]
 
@@ -79,9 +81,9 @@ Vor deinem Code zeigt die Demo den Buntton $h$ von 0 am linken bis knapp 1 am re
 
 Schreibe \vscode{src/psychedelic/psychedelic.frag}[psychedelic.frag] so, dass deine Metabälle wie im Bild aussehen. Übernimm dazu deine Funktion `field` aus `metaballs.frag`.
 
-1. Welche Größe, die du aus $F$ berechnen kannst, ist an den Mittelpunkten der Bälle 0 und wächst nach außen? Wie wird daraus ein Buntton, der sich wiederholt?
-2. Warum gibt es zwischen zwei Ringen keine harte Kante, obwohl der Buntton dort von fast 1 auf 0 springt?
-3. Stelle Anzahl 1 ein und verdopple $\lambda$. Wie ändern sich die Ringe, und was passiert mit den Mustern weit weg vom Ball? Denk an Raster – Koordinatensysteme in Kapitel 2: Ein Pixel ist ein Abtastwert.
+1. Erkläre, wie dein Shader aus $F$ die Farbe eines Fragments berechnet und warum dabei die Ringe im Zielbild entstehen.
+2. Zwischen zwei Ringen hat das Zielbild keine harte Kante. Wodurch vermeidet dein Shader sie?
+3. Stelle Anzahl 1 ein und verdopple $\lambda$. Wie ändern sich die Ringe in deinem Bild, und warum? Was passiert mit den Mustern weit weg vom Ball? Denk an Raster – Koordinatensysteme in Kapitel 2: Ein Pixel ist ein Abtastwert.
 \end{task}
 
 ## Eigene Farben
@@ -91,7 +93,7 @@ Innen und außen und die Farbringe sind nur zwei von vielen Möglichkeiten. $F$ 
 \demo{palette}[palette.frag]
 
 \begin{task}[Deine Farbgebung (optional)]
-Gestalte in \vscode{src/palette/palette.frag}[palette.frag] deine eigenen Metabälle. Übernimm dazu deine Funktion `field`; die Farben `color1`, `color2` und `color3`, $T$ und $\lambda$ stehen als Uniforms bereit. Ideen: Bänder durch uniforme Quantisierung (Kapitel 2, Farbquantisierung), ein Verlauf zwischen den Farben mit `mix`, $F$ als Helligkeit in HSV, Ordered Dithering wie in der Übung „Graustufen und Dithering“ oder eine eigene Formel für den Einfluss eines Balls.
+Gestalte in \vscode{src/palette/palette.frag}[palette.frag] deine eigenen Metabälle. Übernimm dazu deine Funktion `field`; die Farben `color1`, `color2` und `color3`, $T$ und $\lambda$ stehen als Uniforms bereit. Ideen: Bänder durch uniforme Quantisierung (Kapitel 2, Farbquantisierung), ein Verlauf zwischen den Farben mit `mix`, $F$ als Helligkeit einer Farbe, Ordered Dithering wie in der Übung „Graustufen und Dithering“ oder eine eigene Formel für den Einfluss eines Balls.
 \end{task}
 
 \begin{summary}
@@ -144,10 +146,10 @@ Welche Werte sind in allen Fragmenten eines Bildes gleich?
 \end{question}
 
 \begin{question}
-Welche Farbe ergibt die Umrechnung von HSV in RGB aus Kapitel 2 für $H = 180°$, $S = 1$ und $V = 1$?
-- [ ] Rot
-- [ ] Gelb
-- [x] Cyan
-- [ ] Grau
+Ein Fragment-Shader schreibt seine Farbe als $(r, g, b)$ im RGB-Farbmodell. Welche Aussagen stimmen?
+- [x] $(0.3, 0.3, 0.3)$ ist ein Grauton.
+- [ ] $(1, 1, 0)$ ist Cyan.
+- [x] Die Anteile werden addiert: Rot $(1, 0, 0)$ plus Grün $(0, 1, 0)$ ergibt Gelb $(1, 1, 0)$.
+- [ ] Jede wahrnehmbare Farbe lässt sich als $(r, g, b)$ mit $r, g, b \in [0, 1]$ darstellen.
 \end{question}
 \end{quiz}

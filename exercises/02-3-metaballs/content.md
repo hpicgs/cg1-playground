@@ -1,0 +1,152 @@
+\begin{goals}
+- Erzeugen dynamischer zweidimensionaler Visualisierungen auf Basis mathematischer Funktionen.
+\end{goals}
+
+\begin{prerequisites}
+Kapitel 2 der Vorlesung, vor allem Farbmodelle und Farbräume, Raster – Koordinatensysteme, die 2D-Funktionsplots und die uniforme Farbquantisierung. Die Übung „Bildfilter auf CPU und GPU“ für den Einstieg in Fragment-Shader.
+
+Weiterführend: die [Kurzreferenz zu OpenGL ES 3.0](https://www.khronos.org/files/opengles3-quick-reference-card.pdf) mit GLSL ES 3.00 auf den letzten Seiten.
+\end{prerequisites}
+
+## Ein Bild als Funktion
+
+Bisher hat ein Fragment-Shader ein vorhandenes Bild verändert. Er kann ein Bild aber auch ganz neu berechnen: Jedes Pixel bekommt eine Farbe, die nur von seiner Position abhängt. So stellt Kapitel 2 unter 2D-Funktionsplots Funktionen mit zwei Variablen dar: Jedes Pixel steht für einen Punkt der Ebene, und der Funktionswert an diesem Punkt bestimmt seine Farbe.
+
+Die Bälle auf dieser Seite haben Positionen und Radien in Einheiten der Höhe der Canvas: $y$ läuft von 0 am oberen bis 1 am unteren Rand, und $x$ hat dieselbe Einheit, so dass ein Kreis auf jeder Canvas rund bleibt. `uv` läuft dagegen in beide Richtungen von 0 bis 1. Das Uniform `size` enthält die Größe der Canvas in Pixeln.
+
+\begin{note}[Über die Vorlesung hinaus: Metabälle]
+Metabälle sind Kreise, die wie Tropfen ineinanderfließen, wenn sie sich nahekommen. Jeder Ball hat einen Einfluss, der an seinem Mittelpunkt am größten ist und nach außen abnimmt. Für einen Ball mit dem Mittelpunkt $(x_0, y_0)$ und dem Radius $r$ ist das
+
+$$
+f(x, y) = \frac{(\lambda r)^2}{(x - x_0)^2 + (y - y_0)^2},
+$$
+
+mit einem Radiusfaktor $\lambda$, der alle Bälle zugleich größer oder kleiner macht. Ein Punkt gehört zum Ball, wenn der Einfluss dort größer als ein Schwellwert $T$ ist.
+\end{note}
+
+\demo{one-ball}[one-ball.frag]
+
+\begin{note}[Ein Ball]
+Der Shader steht links im Editor und in \vscode{src/one-ball/one-ball.frag}[one-ball.frag]. `ball.xy` ist der Mittelpunkt des Balls, `ball.z` sein Radius und `lambda` der Radiusfaktor.
+
+Berechne zuerst die Position des Fragments in denselben Einheiten wie der Ball, dann den Einfluss des Balls an dieser Position, und färbe das Fragment mit `insideColor`, wenn der Einfluss größer als $T$ ist, sonst mit `outsideColor`.
+
+1. Welchen Radius hat die gefüllte Kreisscheibe, abhängig von $\lambda$, $r$ und $T$? Wie groß ist sie bei $T = 4$ und bei $T = 0.25$ im Vergleich zu $T = 1$? Prüfe.
+2. Nimm vorübergehend `uv` direkt als Position. Welche Form erwartest du für den Ball, und wo ist er, während sein Mittelpunkt bei $x > 1$ liegt? Prüfe und stelle danach deinen Code wieder her.
+
+\begin{solution}
+![Ein Ball mit λ = 1 und T = 1](assets/solution-one-ball.jpg)
+\end{solution}
+\end{note}
+
+\begin{note}
+`dot(d, d)` ist das Quadrat der Länge eines Vektors `d`. Ist `d` die Differenz zweier Punkte, ist das ihr quadrierter Abstand.
+\end{note}
+
+## Viele Bälle
+
+Erst mit mehreren Bällen entsteht der Effekt der Metabälle: Nähern sich zwei Bälle, beulen sie sich zueinander aus und fließen zusammen, bevor sich ihre Kreise berühren, und lösen sich wieder voneinander wie zwei Tropfen. Dafür werden an jedem Punkt die Einflüsse aller Bälle zu einem einzigen Wert $F$ kombiniert, der dann mit $T$ verglichen wird. Alle Bälle der Demos haben den Radius $r = 0.1$.
+
+\demo{metaballs}[metaballs.frag]
+
+\begin{task}[Metabälle]
+Die Bälle stehen im Uniform `balls`: `balls[k].xy` ist der Mittelpunkt und `balls[k].z` der Radius von Ball $k$, und `count` gibt an, wie viele Bälle es gibt.
+
+Schreibe in \vscode{src/metaballs/metaballs.frag}[metaballs.frag] die Funktion `field`, die die Einflüsse aller Bälle an einer Position zu $F$ kombiniert, und benutze sie in `main` wie in der vorigen Aufgabe.
+
+1. Kombiniere die Einflüsse einmal mit dem Maximum und einmal mit der Summe. Bei welcher Kombination fließen zwei Bälle zusammen, bevor sich ihre Kreise berühren?
+2. Halte die Bälle mit Geschwindigkeit 0 an, wenn ihre Mittelpunkte etwa eineinhalb Durchmesser voneinander entfernt sind, und erhöhe $\lambda$ langsam, bis sie sich verbinden.
+3. Welcher Schwellwert $T$ ergibt bei $\lambda = 1.5$ dasselbe Bild wie $T = 1$ bei $\lambda = 1$? Prüfe mit Geschwindigkeit 0.
+
+\begin{solution}
+![Fünf Metabälle mit λ = 1 und T = 1](assets/solution-metaballs.jpg)
+\end{solution}
+\end{task}
+
+## Psychedelisch
+
+Statt nur innen und außen zu unterscheiden, kann man $F$ auch über die Farbe zeigen. Die 2D-Funktionsplots in Kapitel 2 nennen das Farbkodierung: Ein Farbschema bildet den Funktionswert eines Pixels auf eine Farbe ab. Es kann zum Beispiel Bereiche von Werten mit verschiedenen Farben unterscheiden, zwischen Farben interpolieren oder einen Wert auf Graustufen abbilden.
+
+Eine Farbe ist ein Punkt in einem Farbmodell und wird durch drei Koordinaten beschrieben (Kapitel 2, Farbmodell und Farbraum). Ein Farbschema legt fest, welche Koordinaten sich mit dem Wert ändern und welche fest bleiben. Welche Farbfolge dabei entsteht, hängt davon ab, in welchem Farbmodell man das tut.
+
+Vor deinem Code zeigt die Demo `uv` als Rot und Grün.
+
+\demo{psychedelic}[psychedelic.frag]
+
+\begin{task}[Psychedelisch]
+![Ziel mit Anzahl 5 und λ = 1](assets/target-psychedelic.jpg)
+
+Schreibe \vscode{src/psychedelic/psychedelic.frag}[psychedelic.frag] so, dass deine Metabälle wie im Bild aussehen. Übernimm dazu deine Funktion `field` aus `metaballs.frag`.
+
+1. Erkläre, wie dein Shader aus $F$ die Farbe eines Fragments berechnet und warum dabei die Ringe im Zielbild entstehen.
+2. Zwischen zwei Ringen hat das Zielbild keine harte Kante. Wodurch vermeidet dein Shader sie?
+3. Stelle Anzahl 1 ein und verdopple $\lambda$. Wie ändern sich die Ringe in deinem Bild, und warum? Was passiert mit den Mustern weit weg vom Ball? Denk an Raster – Koordinatensysteme in Kapitel 2: Ein Pixel ist ein Abtastwert.
+\end{task}
+
+## Eigene Farben
+
+Innen und außen und die Farbringe sind nur zwei von vielen Möglichkeiten. $F$ lässt sich in Bändern, Verläufen, Mustern oder ganz anderen Farben zeigen, und auch der Einfluss eines Balls muss kein Kreis sein: Mit einer anderen Formel entstehen zum Beispiel Ellipsen, Quadrate oder Sterne. Hier ist Platz, das auszuprobieren.
+
+\demo{palette}[palette.frag]
+
+\begin{task}[Deine Farbgebung (optional)]
+Gestalte in \vscode{src/palette/palette.frag}[palette.frag] deine eigenen Metabälle. Übernimm dazu deine Funktion `field`; die Farben `color1`, `color2` und `color3`, $T$ und $\lambda$ stehen als Uniforms bereit. Ideen: Bänder durch uniforme Quantisierung (Kapitel 2, Farbquantisierung), ein Verlauf zwischen den Farben mit `mix`, $F$ als Helligkeit einer Farbe, Ordered Dithering wie in der Übung „Graustufen und Dithering“ oder eine eigene Formel für den Einfluss eines Balls.
+\end{task}
+
+\begin{summary}
+Beschreibe in eigenen Worten, was du auf dieser Seite gelernt hast und wie du es umgesetzt hast. Save speichert deinen Text in \vscode{summary.md}[summary.md].
+
+\textfield{summary.md}
+\end{summary}
+
+\begin{quiz}
+Bei jeder Frage ist mindestens eine Antwort richtig, aber auch mehrere Antworten können richtig sein.
+
+\begin{question}
+Ein Ball mit $r = 0.1$ und $\lambda = 1$ wird mit dem Schwellwert $T = 4$ gezeichnet. Bis zu welchem Abstand vom Mittelpunkt wird gefüllt?
+- [ ] $0.025$
+- [x] $0.05$
+- [ ] $0.1$
+- [ ] $0.4$
+\end{question}
+
+\begin{question}
+Die Canvas ist $1600 \times 900$ Pixel groß. Positionen werden wie auf dieser Seite in Einheiten der Höhe angegeben. Welchen Wert hat $x$ etwa am rechten Rand?
+- [ ] $1$
+- [ ] $0.5625$
+- [x] $1.78$
+- [ ] $1600$
+\end{question}
+
+\begin{question}
+Zwei Bälle mit $r = 0.1$, $\lambda = 1$ und $T = 1$ werden mit der Summe ihrer Einflüsse kombiniert. Bis zu welchem Abstand der Mittelpunkte sind die gefüllten Flächen verbunden?
+- [ ] $\pi r$
+- [ ] $0.2$
+- [ ] bei jedem Abstand
+- [x] $\sqrt{0.08}$
+\end{question}
+
+\begin{question}
+Welche Einstellungen zeigen dasselbe Bild wie $\lambda = 1$ und $T = 1$?
+- [ ] $\lambda = 2$, $T = 2$
+- [x] $\lambda = 2$, $T = 4$
+- [ ] $\lambda = 1.5$, $T = 1.5$
+- [x] $\lambda = 0.5$, $T = 0.25$
+\end{question}
+
+\begin{question}
+Welche Werte sind in allen Fragmenten eines Bildes gleich?
+- [ ] `uv`
+- [x] `count`
+- [ ] der Einfluss eines Balls am Fragment
+- [x] `lambda`
+\end{question}
+
+\begin{question}
+Ein Fragment-Shader schreibt seine Farbe als $(r, g, b)$ im RGB-Farbmodell. Welche Aussagen stimmen?
+- [x] $(0.3, 0.3, 0.3)$ ist ein Grauton.
+- [ ] $(1, 1, 0)$ ist Cyan.
+- [x] Die Anteile werden addiert: Rot $(1, 0, 0)$ plus Grün $(0, 1, 0)$ ergibt Gelb $(1, 1, 0)$.
+- [ ] Jede wahrnehmbare Farbe lässt sich als $(r, g, b)$ mit $r, g, b \in [0, 1]$ darstellen.
+\end{question}
+\end{quiz}

@@ -1,4 +1,5 @@
 // content.md to HTML: Markdown, KaTeX formulas and LaTeX-style elements.
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import katex from "katex";
 import MarkdownIt from "markdown-it";
@@ -29,6 +30,7 @@ const beginLine = /^\\begin\{(\w+)\}(?:\[(.*)\])?\s*$/;
 const endLine = /^\\end\{(\w+)\}\s*$/;
 const demoLine = /^\\demo\{([\w-]+)\}(?:\[(.*)\])?\s*$/;
 const stepperLine = /^\\stepper\{([\w-]+)\}\s*$/;
+const textFieldLine = /^\\textfield\{([\w-]+\.md)\}\s*$/;
 
 // Placeholders look like \uE000code3\uE001 or \uE000html7\uE001. The two private-use
 // characters never appear in normal text, and markdown-it leaves them alone.
@@ -102,8 +104,8 @@ export function renderContent(
             hideHtml(ideLinkHtml(folder, path, line, title), ""),
     );
 
-    // 4. Environments, demos and step-throughs.
-    const tree = parseLines(text.split("\n"), hiddenLines);
+    // 4. Environments, demos, step-throughs and text fields.
+    const tree = parseLines(text.split("\n"), hiddenLines, folder);
 
     // 5. Render the tree with markdown-it and put the placeholders back.
     const md = createMarkdown();
@@ -212,9 +214,10 @@ export function renderContent(
  *   A stack of open environments handles nesting. Errors become red boxes on the page.
  * @param lines - The text, with code and formulas already replaced by placeholders.
  * @param hiddenLines - Line breaks hidden in each placeholder, to count lines correctly.
+ * @param folder - Absolute exercise folder, to read the files of text fields.
  * @returns The top-level nodes.
  */
-function parseLines(lines: string[], hiddenLines: Map<string, number>): Node[] {
+function parseLines(lines: string[], hiddenLines: Map<string, number>, folder: string): Node[] {
     const root: Node[] = [];
     const open: { name: string; children: Node[]; line: number }[] = [];
 
@@ -248,6 +251,7 @@ function parseLines(lines: string[], hiddenLines: Map<string, number>): Node[] {
         const end = endLine.exec(line);
         const demo = demoLine.exec(line);
         const stepper = stepperLine.exec(line);
+        const textField = textFieldLine.exec(line);
 
         if (begin && environments.includes(begin[1])) {
             const children: Node[] = [];
@@ -270,6 +274,16 @@ function parseLines(lines: string[], hiddenLines: Map<string, number>): Node[] {
             );
         } else if (stepper) {
             addHtml(`<div class="stepper" data-stepper="${escapeHtml(stepper[1])}"></div>`);
+        } else if (textField) {
+            // The field starts with the file's text. The line break after <textarea> is dropped
+            // by the browser, so a text that starts with an empty line keeps it.
+            const path = join(folder, textField[1]);
+            const text = existsSync(path)
+                ? readFileSync(path, "utf8").replaceAll("\r\n", "\n")
+                : "";
+            addHtml(
+                `<div class="textfield" data-file="${escapeHtml(textField[1])}"><textarea spellcheck="false">\n${escapeHtml(text)}</textarea></div>`,
+            );
         } else {
             addText(line);
         }

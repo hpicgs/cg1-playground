@@ -33,6 +33,15 @@ npm run dev
 
 Then open the address shown in the terminal, usually http://localhost:5173/. It shows the landing page with all exercises by chapter. If the port is taken, the server uses the next free one (5174 and so on). Stop it with Ctrl+C.
 
+Each exercise can also be started on its own, for example from a zip downloaded from Moodle. It does not need the rest of this repository: neither the root folder, nor the landing page, nor the root `npm install`. In the exercise's folder, run:
+
+```sh
+npm install
+npm run dev
+```
+
+The address shown in the terminal then opens that exercise directly.
+
 The demos need WebGL 2. [get.webgl.org/webgl2](https://get.webgl.org/webgl2/) shows whether your browser supports it. Firefox and Chrome on Linux, Windows and macOS are supported.
 
 What you change in your IDE shows up on the page right away. If you change a shader (`.vert` or `.frag`), only the demo that uses it is recompiled. If you change a `.ts` file, the whole page reloads and all controls are reset.

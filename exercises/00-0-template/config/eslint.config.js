@@ -16,6 +16,11 @@ export default defineConfig(
         },
     },
     {
+        rules: {
+            "@typescript-eslint/no-unused-vars": ["error", { args: "none" }],
+        },
+    },
+    {
         files: ["**/*.js"],
         extends: [tseslint.configs.disableTypeChecked],
     },

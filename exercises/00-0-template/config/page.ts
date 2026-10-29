@@ -196,8 +196,64 @@ for (const button of document.querySelectorAll<HTMLButtonElement>(".copy-path"))
     });
 }
 
+// Text fields: Save writes the text into its Markdown file in the exercise folder. Each field
+// remembers the text last loaded or saved, so the server can refuse a save over a newer file.
+const textFields: {
+    path: string;
+    area: HTMLTextAreaElement;
+    saved: string;
+    status: HTMLElement;
+}[] = [];
+for (const box of document.querySelectorAll<HTMLElement>(".textfield")) {
+    const file = box.dataset.file ?? "";
+    const area = box.querySelector("textarea");
+    if (area === null) {
+        continue;
+    }
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = "Save";
+    const status = document.createElement("span");
+    const bar = document.createElement("div");
+    bar.className = "textfield-bar";
+    bar.append(button, file, status);
+    box.append(bar);
+
+    const field = {
+        path: new URL(`./${file}`, location.href).pathname,
+        area,
+        saved: area.value,
+        status,
+    };
+    textFields.push(field);
+
+    area.addEventListener("input", () => {
+        status.textContent = area.value === field.saved ? "" : "nicht gespeichert";
+        status.classList.remove("failed");
+    });
+    button.addEventListener("click", () => {
+        const source = area.value;
+        void fetch("/__playground/save-text", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ page: location.pathname, file, source, loaded: field.saved }),
+        }).then(async (response) => {
+            if (response.ok) {
+                field.saved = source;
+                status.textContent = "gespeichert";
+                status.classList.remove("failed");
+            } else {
+                const result = (await response.json()) as { error?: string };
+                status.textContent = result.error ?? "Speichern fehlgeschlagen";
+                status.classList.add("failed");
+            }
+        });
+    });
+}
+
 // Self-tests: Auswerten colours the checked options, marks each question and counts the
-// right ones. A question is right if exactly its right options are checked.
+// right ones. A question is right if exactly its right options are checked, and partly right
+// if at least one of its right options is checked.
 for (const quiz of document.querySelectorAll<HTMLElement>(".quiz")) {
     const questions = [...quiz.querySelectorAll<HTMLElement>(".question")];
     const score = quiz.querySelector(".quiz-result span");
@@ -206,6 +262,7 @@ for (const quiz of document.querySelectorAll<HTMLElement>(".quiz")) {
         let rightQuestions = 0;
         for (const question of questions) {
             let allRight = true;
+            let someRight = false;
             for (const input of question.querySelectorAll<HTMLInputElement>("input")) {
                 const correct = input.dataset.correct === "true";
                 const option = input.closest(".option");
@@ -214,9 +271,13 @@ for (const quiz of document.querySelectorAll<HTMLElement>(".quiz")) {
                 if (input.checked !== correct) {
                     allRight = false;
                 }
+                if (input.checked && correct) {
+                    someRight = true;
+                }
             }
             question.classList.toggle("right", allRight);
-            question.classList.toggle("wrong", !allRight);
+            question.classList.toggle("partial", !allRight && someRight);
+            question.classList.toggle("wrong", !allRight && !someRight);
             if (allRight) {
                 rightQuestions += 1;
             }
@@ -230,7 +291,7 @@ for (const quiz of document.querySelectorAll<HTMLElement>(".quiz")) {
     for (const question of questions) {
         question.addEventListener("change", () => {
             for (const element of [question, ...question.querySelectorAll(".option")]) {
-                element.classList.remove("right", "wrong");
+                element.classList.remove("right", "partial", "wrong");
             }
         });
     }
@@ -285,6 +346,23 @@ import.meta.hot?.on("playground:shader", (event: { path: string; source: string 
             if (demo.editor?.setSource(file, event.source) ?? true) {
                 rebuild(demo);
             }
+        }
+    }
+});
+
+// A text field's file changed on disk: the IDE wins over unsaved text in the browser. A change
+// that is the field's own save is ignored.
+import.meta.hot?.on("playground:text", (event: { path: string; source: string }) => {
+    for (const field of textFields) {
+        const text = event.source.replaceAll("\r\n", "\n");
+        if (event.path === field.path && text !== field.saved) {
+            const hadEdits = field.area.value !== field.saved;
+            field.area.value = text;
+            field.saved = text;
+            field.status.textContent = hadEdits
+                ? "in der IDE geändert und neu geladen; ungespeicherte Änderungen sind verworfen"
+                : "in der IDE geändert und neu geladen";
+            field.status.classList.remove("failed");
         }
     }
 });

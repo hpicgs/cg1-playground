@@ -1,10 +1,6 @@
 \begin{goals}
-- Zwischen Pixel $(i, j)$, Kanal und Index im Byte-Array eines Bildes umrechnen.
-- Schleifen schreiben, die ein `ImageData` lesen und ein neues Bild erzeugen.
 - Ein Farbbild mit dem Mittelwert und mit gewichteten Kanälen in Graustufen umwandeln und den Unterschied erklären.
 - Schwellwert, Error Diffusion nach Floyd–Steinberg und Ordered Dithering mit einer Bayer-Matrix programmieren.
-- Code mit Werten prüfen, die vorher von Hand berechnet wurden.
-- Für jedes Verfahren entscheiden, ob ein Pixel die Ergebnisse anderer Pixel braucht.
 \end{goals}
 
 \begin{prerequisites}
@@ -31,12 +27,12 @@ Die Demo zeigt ein Testbild aus $6 \times 4$ Pixeln und darunter sein Array, ein
 
 \demo{pixel-index}
 
-\begin{task}[Byte-Index]
+\begin{note}[Byte-Index]
 Das Testbild ist $W = 6$ Pixel breit. Sage voraus und prüfe danach in der Demo:
 
 1. An welchem Index steht das B-Byte von Pixel $(4, 2)$?
 2. Zu welchem Pixel und Kanal gehört `data[57]`?
-\end{task}
+\end{note}
 
 Ein Foto wird geladen, auf eine unsichtbare Canvas gezeichnet und mit `getImageData` ausgelesen:
 
@@ -75,7 +71,7 @@ export function invert(image: ImageData): ImageData {
 
 \demo{invert}
 
-\begin{task}[Bytes schreiben]
+\begin{note}[Bytes schreiben]
 Die Funktion steht in \vscode{src/invert/invert.ts}[invert.ts].
 
 1. Ändere `invert` so, dass nur der Rot-Kanal invertiert wird und Grün und Blau unverändert bleiben. Schreibe vorher auf, welche Bytes die Felder Weiß, Schwarz, Rot und Grau 128 danach haben, und vergleiche mit der Demo.
@@ -84,7 +80,7 @@ Die Funktion steht in \vscode{src/invert/invert.ts}[invert.ts].
 \begin{solution}
 ![Nur der Rot-Kanal ist invertiert: Weiß wird Cyan, Schwarz wird Rot](assets/solution-invert.jpg)
 \end{solution}
-\end{task}
+\end{note}
 
 ## Graustufen
 

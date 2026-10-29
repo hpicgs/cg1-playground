@@ -1,8 +1,5 @@
 \begin{goals}
-- In jedem Fragment eine Funktion der Position auswerten und den Wert als Farbe ausgeben.
-- Pixelkoordinaten so umrechnen, dass Kreise auf jeder Canvas rund bleiben.
-- Das Prinzip von Metabällen erklären und eine Kombination für mehrere Bälle finden.
-- Ein passendes Farbmodell wählen, um einen Wert auf eine Farbe abzubilden.
+- Erzeugen dynamischer zweidimensionaler Visualisierungen auf Basis mathematischer Funktionen.
 \end{goals}
 
 \begin{prerequisites}
@@ -29,7 +26,7 @@ mit einem Radiusfaktor $\lambda$, der alle Bälle zugleich größer oder kleiner
 
 \demo{one-ball}[one-ball.frag]
 
-\begin{task}[Ein Ball]
+\begin{note}[Ein Ball]
 Der Shader steht links im Editor und in \vscode{src/one-ball/one-ball.frag}[one-ball.frag]. `ball.xy` ist der Mittelpunkt des Balls, `ball.z` sein Radius und `lambda` der Radiusfaktor.
 
 Berechne zuerst die Position des Fragments in denselben Einheiten wie der Ball, dann den Einfluss des Balls an dieser Position, und färbe das Fragment mit `insideColor`, wenn der Einfluss größer als $T$ ist, sonst mit `outsideColor`.
@@ -40,7 +37,7 @@ Berechne zuerst die Position des Fragments in denselben Einheiten wie der Ball, 
 \begin{solution}
 ![Ein Ball mit λ = 1 und T = 1](assets/solution-one-ball.jpg)
 \end{solution}
-\end{task}
+\end{note}
 
 \begin{note}
 `dot(d, d)` ist das Quadrat der Länge eines Vektors `d`. Ist `d` die Differenz zweier Punkte, ist das ihr quadrierter Abstand.

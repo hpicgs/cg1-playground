@@ -1,8 +1,5 @@
 \begin{goals}
-- Einen Fragment-Shader schreiben, der ein Bild Pixel für Pixel verändert.
-- Zwischen Pixel $(i, j)$ und Texturkoordinate umrechnen.
 - Box-Filter und Laplace-Filter als Schleife auf der CPU und als Fragment-Shader programmieren, mit derselben Randbehandlung.
-- Erklären, was im Shader an die Stelle der Schleifen, des Index und des Schreibens ins Array tritt.
 - Erklären, warum die GPU ein Bild schneller filtert als eine Schleife auf der CPU.
 \end{goals}
 
@@ -64,7 +61,7 @@ Auf der Canvas zählt WebGL die Zeilen von unten. `quad.vert` gibt `uv` deshalb 
 
 \demo{gray-shader}[gray.frag]
 
-\begin{task}[Dein erster Fragment-Shader]
+\begin{note}[Dein erster Fragment-Shader]
 Der Shader steht links im Editor und in \vscode{src/gray-shader/gray.frag}[gray.frag]. Schreibe den Shader so, dass jedes Pixel seinen BT.709-Grauwert bekommt (Kapitel 2, Graustufen-Umwandlung).
 
 1. Ersetze die letzte Zeile von `main` vorübergehend durch `fragColor = vec4(uv, 0.0, 1.0);`. Welche Farbe erwartest du in den vier Ecken des Fotos? Prüfe und stelle die Zeile danach wieder her.
@@ -74,7 +71,7 @@ Der Shader steht links im Editor und in \vscode{src/gray-shader/gray.frag}[gray.
 \begin{solution}
 ![Testbild und Foto in BT.709-Graustufen](assets/solution-gray.jpg)
 \end{solution}
-\end{task}
+\end{note}
 
 ## Bildfaltung
 

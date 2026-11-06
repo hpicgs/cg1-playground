@@ -70,6 +70,16 @@ Die Demo zeichnet die beiden Endpunkte in derselben Farbe wie alle anderen Pixel
 \end{solution}
 \end{task}
 
+## Eigene Umsetzung
+
+\begin{task}[Dreieck]
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Zeichne mit WebGL ein Dreieck, dessen Farbe man mit einem Farbwähler einstellt. Wie du deinen Code aufteilst, entscheidest du selbst. Rufe ihn aus \vscode{src/solution/index.ts}[start] auf; das Ergebnis erscheint in der Demo unter dieser Aufgabe.
+
+1. Wie verändert sich dein Dreieck, wenn du das Browserfenster schmaler machst?
+\end{task}
+
+\demo{solution}
+
 \begin{summary}
 Beschreibe in eigenen Worten, was du auf dieser Seite gelernt hast und wie du es umgesetzt hast. Save speichert deinen Text in \vscode{summary.md}[summary.md].
 

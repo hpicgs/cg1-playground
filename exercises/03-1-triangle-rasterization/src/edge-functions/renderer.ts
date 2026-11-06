@@ -13,6 +13,9 @@ export type ShapeMode = "triangles" | "lines" | "loop" | "points";
 // The attribute location of the vertex position in shape.vert.
 const positionLocation = 0;
 
+// The colour around the raster.
+const canvasBackground = [0.08, 0.09, 0.11];
+
 let gl: WebGL2RenderingContext;
 let program: WebGLProgram;
 let vertexArray: WebGLVertexArrayObject;
@@ -80,7 +83,7 @@ function compile(type: GLenum, name: string, source: string | undefined): WebGLS
 // Fills the whole canvas with the background colour.
 export function clear(): void {
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    gl.clearColor(0.08, 0.09, 0.11, 1);
+    gl.clearColor(canvasBackground[0], canvasBackground[1], canvasBackground[2], 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
 }
 

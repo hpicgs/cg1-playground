@@ -622,3 +622,13 @@ table.stepper-state {
     font-size: 0.9rem;
     pointer-events: none;
 }
+
+/* Read-only values at full contrast, without the field background of an input. */
+.lil-gui .lil-controller.lil-disabled {
+    opacity: 1;
+}
+
+.lil-gui .lil-controller.lil-disabled input {
+    background: transparent;
+    color: var(--text);
+}

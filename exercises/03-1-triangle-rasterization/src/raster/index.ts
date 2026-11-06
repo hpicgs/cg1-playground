@@ -32,6 +32,16 @@ const gridColor = [0.24, 0.26, 0.31];
 const centreColor = [0.45, 0.48, 0.55];
 const outlineColor = [0.85, 0.86, 0.89];
 
+// Sizes of the drawn points in CSS pixels: pixel centres, corners and the ring around a corner.
+const centreSize = 3;
+const cornerSize = 10;
+const cornerRingSize = 14;
+
+// How close to a corner, in pixels of the raster, a click grabs it, and how far a corner's name
+// stands from the corner.
+const grabRadius = 0.8;
+const labelOffset = 1.3;
+
 // Sizes in CSS pixels: the margin around the raster and the column on the right with the
 // controls.
 const padding = 16;
@@ -56,7 +66,7 @@ export function start(
     const table = gui.addFolder("Ecken: x, y, Farbe");
     table.domElement.classList.add("cells", "cells-3");
     corners.forEach((corner, k) => {
-        table.add(corner, "x").step(0.5).name(`v${k}`);
+        table.add(corner, "x").step(0.5).name(`v${"₀₁₂"[k]}`);
         table.add(corner, "y").step(0.5).name("");
         table.addColor(corner, "color").name("");
     });
@@ -133,7 +143,8 @@ function pointAt(event: PointerEvent): Point {
     };
 }
 
-function isInside(point: Point): boolean {
+// Whether a point lies on the raster.
+function isOnRaster(point: Point): boolean {
     return point.x >= 0 && point.x < W && point.y >= 0 && point.y < H;
 }
 
@@ -142,7 +153,7 @@ function grab(event: PointerEvent): void {
     const point = pointAt(event);
     dragged = null;
     for (const corner of corners) {
-        if (Math.hypot(corner.x - point.x, corner.y - point.y) < 0.8) {
+        if (Math.hypot(corner.x - point.x, corner.y - point.y) < grabRadius) {
             dragged = corner;
         }
     }
@@ -191,13 +202,19 @@ function draw(): void {
             centres.push(i + 0.5, j + 0.5);
         }
     }
-    renderer.drawShape(rect, "points", centres, centreColor, 3 * dpr);
+    renderer.drawShape(rect, "points", centres, centreColor, centreSize * dpr);
 
     const outline = corners.flatMap((corner) => [corner.x, corner.y]);
     renderer.drawShape(rect, "loop", outline, outlineColor);
     for (const corner of corners) {
-        renderer.drawShape(rect, "points", [corner.x, corner.y], outlineColor, 14 * dpr);
-        renderer.drawShape(rect, "points", [corner.x, corner.y], corner.color, 10 * dpr);
+        renderer.drawShape(
+            rect,
+            "points",
+            [corner.x, corner.y],
+            outlineColor,
+            cornerRingSize * dpr,
+        );
+        renderer.drawShape(rect, "points", [corner.x, corner.y], corner.color, cornerSize * dpr);
     }
 
     placeLabels(rect);
@@ -213,8 +230,8 @@ function placeLabels(rect: renderer.Rect): void {
     };
     corners.forEach((corner, k) => {
         const length = Math.hypot(corner.x - centre.x, corner.y - centre.y) || 1;
-        const x = corner.x + (1.3 * (corner.x - centre.x)) / length;
-        const y = corner.y + (1.3 * (corner.y - centre.y)) / length;
+        const x = corner.x + (labelOffset * (corner.x - centre.x)) / length;
+        const y = corner.y + (labelOffset * (corner.y - centre.y)) / length;
         labels[k].style.left = `${(rect.left + (x / W) * rect.width) / dpr}px`;
         labels[k].style.top = `${(rect.top + (y / H) * rect.height) / dpr}px`;
     });
@@ -225,8 +242,9 @@ function doubleArea(a: Point, b: Point, c: Point): number {
     return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }
 
-// The barycentric coordinates of q (Kapitel 3, Baryzentrische Koordinaten): the area of the
-// partial triangle opposite each corner, divided by the area of the whole triangle.
+// The barycentric coordinates of q (Kapitel 3, Edge Function Testing: Baryzentrische
+// Koordinaten): the partial areas A(v1, v2, q), A(v2, v0, q) and A(v0, v1, q), each divided by
+// the area A(v0, v1, v2) of the whole triangle.
 function barycentric(q: Point): [number, number, number] | null {
     const [v0, v1, v2] = corners;
     const area = doubleArea(v0, v1, v2);
@@ -234,15 +252,15 @@ function barycentric(q: Point): [number, number, number] | null {
         return null;
     }
     return [
-        doubleArea(q, v1, v2) / area,
-        doubleArea(v0, q, v2) / area,
+        doubleArea(v1, v2, q) / area,
+        doubleArea(v2, v0, q) / area,
         doubleArea(v0, v1, q) / area,
     ];
 }
 
 // The pixel under the mouse, the barycentric coordinates of its centre and its bytes.
 function showReadout(): void {
-    if (mouse === null || !isInside(mouse)) {
+    if (mouse === null || !isOnRaster(mouse)) {
         readout.pixel = "–";
         readout.barycentric = "–";
         readout.bytes = "–";

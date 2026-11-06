@@ -38,6 +38,17 @@ const positiveColor = [0.16, 0.38, 0.26];
 const negativeColor = [0.42, 0.16, 0.19];
 const triangleColor = [0.85, 0.86, 0.89];
 const pointColor = [0.95, 0.78, 0.3];
+const centreColor = [0.62, 0.65, 0.72];
+
+// Sizes of the drawn points in CSS pixels: pixel centres with their dark ring, corners and p.
+const centreSize = 3;
+const centreRingSize = 5;
+const pointSize = 10;
+
+// How close to a corner, in pixels of the raster, a click grabs it, and how far a corner's name
+// stands from the corner.
+const grabRadius = 0.8;
+const labelOffset = 1.3;
 
 // Sizes in CSS pixels: the margin around the raster and the column on the right with the
 // controls.
@@ -62,7 +73,7 @@ export function start(
     const table = gui.addFolder("Ecken: x, y");
     table.domElement.classList.add("cells", "cells-2");
     corners.forEach((corner, k) => {
-        table.add(corner, "x").step(0.5).name(`v${k}`);
+        table.add(corner, "x").step(0.5).name(`v${"₀₁₂"[k]}`);
         table.add(corner, "y").step(0.5).name("");
     });
     gui.add(params, "edge", edgeOptions).name("Kante");
@@ -147,7 +158,7 @@ function grab(event: PointerEvent): void {
     const point = pointAt(event);
     dragged = p;
     for (const corner of corners) {
-        if (Math.hypot(corner.x - point.x, corner.y - point.y) < 0.8) {
+        if (Math.hypot(corner.x - point.x, corner.y - point.y) < grabRadius) {
             dragged = corner;
         }
     }
@@ -248,14 +259,16 @@ function draw(): void {
     }
     renderer.drawShape(rect, "lines", grid, gridColor);
 
-    // Pixel centres, where p can be placed.
+    // Pixel centres, where p can be placed, with a dark ring so that they show on both
+    // half-spaces.
     const centres: number[] = [];
     for (let j = 0; j < H; j++) {
         for (let i = 0; i < W; i++) {
             centres.push(i + 0.5, j + 0.5);
         }
     }
-    renderer.drawShape(rect, "points", centres, gridColor, 3 * dpr);
+    renderer.drawShape(rect, "points", centres, rasterColor, centreRingSize * dpr);
+    renderer.drawShape(rect, "points", centres, centreColor, centreSize * dpr);
 
     // The triangle with an arrow on each directed edge, its corners and p.
     const outline = corners.flatMap((corner) => [corner.x, corner.y]);
@@ -264,8 +277,8 @@ function draw(): void {
         const arrow = arrowhead(corners[k], corners[(k + 1) % 3]);
         renderer.drawShape(rect, "triangles", arrow, triangleColor);
     }
-    renderer.drawShape(rect, "points", outline, triangleColor, 10 * dpr);
-    renderer.drawShape(rect, "points", [p.x, p.y], pointColor, 10 * dpr);
+    renderer.drawShape(rect, "points", outline, triangleColor, pointSize * dpr);
+    renderer.drawShape(rect, "points", [p.x, p.y], pointColor, pointSize * dpr);
 
     placeLabels(rect);
     showReadout();
@@ -280,8 +293,8 @@ function placeLabels(rect: renderer.Rect): void {
     };
     corners.forEach((corner, k) => {
         const length = Math.hypot(corner.x - centre.x, corner.y - centre.y) || 1;
-        const x = corner.x + (1.3 * (corner.x - centre.x)) / length;
-        const y = corner.y + (1.3 * (corner.y - centre.y)) / length;
+        const x = corner.x + (labelOffset * (corner.x - centre.x)) / length;
+        const y = corner.y + (labelOffset * (corner.y - centre.y)) / length;
         labels[k].style.left = `${(rect.left + (x / W) * rect.width) / dpr}px`;
         labels[k].style.top = `${(rect.top + (y / H) * rect.height) / dpr}px`;
     });

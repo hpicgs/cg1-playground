@@ -1,0 +1,4 @@
+{
+    "title": "Antialiasing",
+    "description": "Aliasing beim Rasterisieren beobachten und Dreiecke mit Supersampling auf der GPU und auf der CPU glätten."
+}

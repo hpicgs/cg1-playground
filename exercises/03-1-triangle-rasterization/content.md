@@ -164,6 +164,10 @@ Das Ergebnis soll mindestens zwei Dreiecke mit einer gemeinsamen Kante auf einem
 1. Zeichne das Quadrat von $(0, 0)$ bis $(8, 8)$ als die Dreiecke $(0, 0), (8, 0), (8, 8)$ und $(0, 0), (8, 8), (0, 8)$, einmal mit dem ersten und einmal mit dem zweiten Dreieck zuerst gezeichnet. Welches Dreieck färbt in deinem Bild die Pixel auf der Diagonalen, und warum?
 2. Vertausche zwei Ecken eines der Dreiecke. Gehört in deinem Bild noch jedes Pixel der gemeinsamen Kante zu genau einem Dreieck? Wenn nicht: Welche Pixel fehlen oder wechseln mit der Reihenfolge, und warum?
 3. Stelle die Ecken und Farben eines deiner Dreiecke auch in der ersten Demo dieser Seite ein. Setzt die GPU dort andere Pixel als dein Rasterisierer? Wenn ja, welche, und was folgt daraus für ihre Regel?
+
+\begin{solution}
+![Zwei Dreiecke mit einer gemeinsamen Kante und interpolierten Eckfarben auf einem Raster aus großen Pixeln](assets/solution-rasterizer.png)
+\end{solution}
 \end{task}
 
 \demo{solution}

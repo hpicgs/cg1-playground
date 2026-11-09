@@ -1,0 +1,4 @@
+{
+    "title": "Farb-LUTs",
+    "description": "Farbtransformationen als 3D-LUT vorberechnen, als Bild ablegen und mit Nearest und trilinearer Interpolation auf ein Foto anwenden."
+}

@@ -113,13 +113,14 @@ Die Demo zeichnet $K$ Quadrate („Quadrate“) mit der Seitenlänge $s$ in Pixe
 \begin{task}[Dreiecksfächer messen]
 Schreibe ein Programm, das ein regelmäßiges Polygon mit $n$ Ecken auf der CPU als Dreiecksfächer erzeugt, es mit einem Vertex- und einem Fragment-Shader zeichnet und misst, wie die Zeit zum Zeichnen mit $n$ wächst. Rufe deinen Code aus \vscode{src/solution/index.ts}[start] auf; das Ergebnis erscheint in der Demo unter dieser Aufgabe.
 
-Das Ergebnis soll das Polygon für ein einstellbares $n$ so zeigen, dass der Kreis mit Radius $r$ um den Mittelpunkt des Polygons jede Seite des Polygons berührt. Gemessen wird die Zeit pro Fächer für $n$ von 3 bis mindestens 65 536, für $r = 256$ und $r = 128$ Pixel, in einem Raster fester Größe, in das auch das Polygon für $n = 3$ ganz hineinpasst. Eine Wiederholung der Messung soll ähnliche Werte liefern.
+Das Ergebnis soll das Polygon für ein einstellbares $n$ so zeigen, dass der Kreis mit Radius $r$ um den Mittelpunkt des Polygons jede Seite des Polygons berührt. Gemessen wird die Zeit pro Fächer für $n$ von 3 bis mindestens 65 536, für $r = 256$ und $r = 128$ Pixel, in einem Raster fester Größe, in das auch das Polygon für $n = 3$ ganz hineinpasst.
 
 Trage deine Messwerte in \vscode{src/results/results.json}[results.json] ein, als Liste von Zeilen mit einem Wert pro Spalte, zum Beispiel `[{ "n": 3, "r = 256 (µs)": 4.1, "r = 128 (µs)": 1.2 }]`. Die Tabelle unter der Demo zeigt sie an.
 
-1. Wie viele Eckpunkte übergibt dein Programm für $n = 6$ an `drawArrays`, und wie viele Dreiecke entstehen? Wie viele Fragmente deines Polygons für $n = 6$ und $r = 256$ liegen ungefähr außerhalb des Kreises, und ab welchem $n$ ist es weniger als 1 % seiner Fragmente?
-2. In welchem Bereich von $n$ liegt die Zeit pro Fächer höchstens 10 % über ihrem Minimum? Miss dafür auch viele kleine $n$. Warum fällt die Zeit zuerst und steigt später?
-3. Was ändert sich mit $r = 128$, für kleine und für große $n$?
+1. Ab welchem $n$ liegen weniger als 1 % der Fragmente deines Polygons außerhalb des Kreises?
+2. In welchem Bereich von $n$ liegt die Zeit pro Fächer höchstens 10 % über ihrem Minimum? Miss dafür auch viele kleine $n$.
+3. Warum fällt die Zeit zuerst und steigt später?
+4. Was ändert sich mit $r = 128$, für kleine und für große $n$?
 
 \begin{solution}
 ![Das Polygon für n = 6 mit dem Kreis, der jede seiner Seiten berührt](assets/solution-fan.png)

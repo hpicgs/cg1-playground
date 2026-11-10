@@ -534,6 +534,27 @@ figcaption {
     cursor: default;
 }
 
+/* Tables in the page text. */
+#content > table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+#content > table th,
+#content > table td {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+}
+
+#content > table th {
+    color: var(--muted);
+    font-weight: normal;
+}
+
 table.stepper-state {
     width: 100%;
     margin-top: 0.6rem;
@@ -579,6 +600,11 @@ table.stepper-state {
     --demo-width: min(96vw, 84rem);
 }
 
+.demo[data-demo="multisampling"] {
+    --demo-width: min(96vw, 84rem);
+    --demo-aspect: 5 / 2;
+}
+
 /* lil-gui folders shown as a table: one row per corner, the corner's name only in the first cell. */
 .lil-gui.cells > .lil-children {
     display: flex;
@@ -608,6 +634,16 @@ table.stepper-state {
     transform: translate(-50%, -50%);
     color: var(--text);
     font-size: 0.9rem;
+    pointer-events: none;
+}
+
+/* The names above the views of the demo "multisampling". */
+.demo .panel-label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    color: var(--text);
+    font-size: 0.9rem;
+    white-space: nowrap;
     pointer-events: none;
 }
 

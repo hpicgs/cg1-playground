@@ -2,6 +2,7 @@
 - Erklären, wie Aliasing beim Rasterisieren durch die Abtastung an den Pixelzentren entsteht.
 - Beschreiben, wie Supersampling die Farbe eines Pixels aus $n \times n$ Samples bestimmt.
 - Supersampling auf der GPU und auf der CPU umsetzen.
+- Beschreiben, worin sich das Multisampling der GPU vom Supersampling unterscheidet.
 \end{goals}
 
 \begin{prerequisites}
@@ -10,8 +11,8 @@ Kapitel 3 der Vorlesung, vor allem das Aliasing und die Dreiecksrasterisierung m
 Weiterführend: [High-Quality Antialiased Rasterization](https://developer.nvidia.com/gpugems/gpugems2/part-iii-high-quality-rendering/chapter-21-high-quality-antialiased-rasterization) von Dan Wexler und Eric Enderton in GPU Gems 2 und die [Kurzreferenz zu OpenGL ES 3.0](https://www.khronos.org/files/opengles3-quick-reference-card.pdf) mit GLSL ES 3.00 auf den letzten Seiten.
 \end{prerequisites}
 
-\begin{note}[Über die Vorlesung hinaus: Supersampling]
-Kapitel 3 zeigt unter „Aliasing“ eine Rasterisierung ohne und mit Antialiasing, erklärt aber kein Verfahren dafür. Diese Seite baut das Supersampling aus der Abtastung an den Pixelzentren und dem Box-Filter auf.
+\begin{note}[Über die Vorlesung hinaus: Supersampling und Multisampling]
+Kapitel 3 zeigt unter „Aliasing“ eine Rasterisierung ohne und mit Antialiasing, erklärt aber kein Verfahren dafür. Diese Seite baut das Supersampling aus der Abtastung an den Pixelzentren und dem Box-Filter auf und vergleicht es mit dem Multisampling der GPU.
 \end{note}
 
 ## Aliasing beim Rasterisieren
@@ -40,8 +41,6 @@ Das sind genau die Pixelzentren eines Rasters, das in jeder Richtung $n$-mal so 
 
 \begin{webgl}
 Kapitel 2 (Raster – Koordinatensysteme) nennt das Abtasten an $(i + 0.5, j + 0.5)$ Subsampling. Supersampling heißt dagegen, mehrere Samples pro Pixel zu nehmen.
-
-Eine WebGL-Canvas glättet Kanten normalerweise selbst: `getContext` fordert mit `antialias: true`, der Voreinstellung, das Multisampling der GPU an (MSAA), wie `antialias: true` in den three.js-Beispielen in Kapitel 1 (High-Level API three.js). Es testet mehrere Samples pro Pixel, führt den Fragment-Shader aber nur einmal pro Pixel und Dreieck aus. Die Demos dieser Seite schalten es mit `antialias: false` aus.
 \end{webgl}
 
 Die Demo rasterisiert dasselbe Dreieck mit $n \times n$ Samples pro Pixel. „Samples“ zeigt die Samples, weiß im Dreieck und grau außerhalb, und darüber das Gitter der Pixel; „Ergebnis“ zeigt das Raster, das `resolve.frag` daraus schreibt. Rechts stehen das Pixel, über dem die Maus zuletzt war, wie viele seiner Samples im Dreieck liegen und seine Bytes im Ergebnis.
@@ -67,6 +66,39 @@ Die Demo rasterisiert das Dreieck in eine Textur `samples` mit $n \times n$ Texe
 ![Das Ergebnis für das Dreieck „Groß“ mit n = 4](assets/solution-resolve.png)
 \end{solution}
 \end{task}
+
+## Multisampling
+
+Supersampling führt den Fragment-Shader für jedes Sample aus. Die GPU bietet ein günstigeres Verfahren an, das Multisampling (MSAA). Es testet wie das Supersampling für mehrere Samples pro Pixel, ob sie im Dreieck liegen, führt den Fragment-Shader aber nur einmal pro Pixel und Dreieck aus, am Pixelzentrum, und schreibt seine Farbe in alle Samples des Pixels, die im Dreieck liegen. Danach bekommt jedes Pixel den Mittelwert seiner Samples. Wo die Samples im Pixel liegen, legt die GPU fest.
+
+In der Rendering-Pipeline (Kapitel 3, OpenGL Rendering Pipeline) unterscheiden sich die drei Verfahren erst ab der Rasterisierung:
+
+| Stufe | 1 Sample | MSAA | Supersampling |
+|---|---|---|---|
+| Vertex Shader | einmal pro Eckpunkt | einmal pro Eckpunkt | einmal pro Eckpunkt |
+| Rasterisierung (Triangle Traversal) | testet das Pixelzentrum | testet jedes Sample | testet jedes Sample als Pixelzentrum eines $n$-mal so feinen Rasters |
+| Fragment Shader | einmal pro Pixel und Dreieck | einmal pro Pixel und Dreieck, am Pixelzentrum | einmal pro Sample |
+| Per-Fragment Operations (Merging) | schreibt ein Pixel | schreibt die Farbe in alle Samples im Dreieck | schreibt ein Sample |
+| Danach | – | eine Framebufferoperation bildet den Mittelwert jedes Pixels | ein eigener Durchgang bildet den Mittelwert jedes Pixels, in der Demo `resolve.frag` |
+
+\begin{webgl}
+Eine WebGL-Canvas glättet Kanten normalerweise selbst: `getContext` fordert mit `antialias: true`, der Voreinstellung, MSAA an, wie `antialias: true` in den three.js-Beispielen in Kapitel 1 (High-Level API three.js). Die Demos dieser Seite schalten es für die Canvas mit `antialias: false` aus. Einen eigenen Framebuffer mit MSAA legt `renderbufferStorageMultisample` mit der gewünschten Zahl an Samples pro Pixel an, und `blitFramebuffer` schreibt die Mittelwerte in einen gewöhnlichen Framebuffer. Jede GPU bietet mindestens 4 Samples pro Pixel an und darf mehr nehmen als angefordert. Manche Treiber kombinieren bei vielen Samples, etwa 16, MSAA mit Supersampling; der Fragment-Shader läuft dann mehrmals pro Pixel, und „MSAA“ sieht in der Demo aus wie „Supersampling“.
+\end{webgl}
+
+Die Demo zeichnet zwei gleich dünne Linien mit einem Sample pro Pixel, mit MSAA und mit Supersampling. Die obere ist ein schmales Rechteck aus zwei Dreiecken. Die untere berechnet der Fragment-Shader eines Dreiecks, das das ganze Raster bedeckt: Er färbt ein Fragment weiß, wenn es nah genug an der Linie liegt. Für das Supersampling nimmt die Demo das gespeicherte `resolve.frag` aus der Aufgabe „Mittelwert der Samples“; solange es nur ein Sample nimmt, zeigt auch „Supersampling“ nur ein Sample pro Pixel. Hinter den Namen der oberen Reihe steht, wie oft der Fragment-Shader läuft. Die untere Reihe zeigt dasselbe in voller Auflösung, mit einem Pixel des Bildes pro Pixel des Bildschirms; „Linienbreite“ zählt in Pixeln des jeweiligen Bildes. „Samples pro Pixel“ gilt für MSAA und Supersampling: 4 heißt $n = 2$, 16 heißt $n = 4$.
+
+\demo{multisampling}
+
+\begin{task}[Multisampling und Supersampling]
+1. Schalte „Animieren“ ein und beobachte die obere Linie. Warum hängt sie bei MSAA und bei Supersampling zusammen, bei „1 Sample“ aber nicht?
+2. Beobachte jetzt die untere Linie. Warum zerfällt sie bei MSAA wie bei „1 Sample“, bei Supersampling aber nicht?
+3. Stelle „Linienbreite“ auf 2. Wie unterscheiden sich bei MSAA die Ränder der beiden Linien?
+4. Wann reicht MSAA, und wann braucht man Supersampling?
+\end{task}
+
+\begin{note}[Antialiasing heute]
+Spiele verwenden heute selten MSAA allein. Ein Grund ist Deferred Shading: Viele Spiele beleuchten erst nach der Rasterisierung das fertige Bild, aus Zwischenergebnissen, die sie für jedes Pixel speichern; mit MSAA müssten sie diese für jedes Sample speichern und beleuchten. Verbreitet sind stattdessen Filter, die das fertige Bild glätten (FXAA, SMAA), temporales Antialiasing (TAA), das Samples aus mehreren aufeinanderfolgenden Bildern kombiniert, und Upscaler wie DLSS und FSR, die ein kleineres Bild hochrechnen und dafür teils maschinelles Lernen einsetzen. MSAA ist vor allem dort noch üblich, wo direkt beim Rasterisieren beleuchtet wird, etwa bei VR und auf mobilen GPUs. Mehr dazu in [Anti Aliasing](https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing) bei LearnOpenGL und in [A Quick Overview of MSAA](https://mynameismjp.wordpress.com/2012/10/24/msaa-overview/) von Matt Pettineo.
+\end{note}
 
 ## Eigene Umsetzung
 

@@ -76,7 +76,7 @@ Das Ergebnis soll das Foto und das gefärbte Foto nebeneinander zeigen, und man 
 
 1. Wende `identitaet-4.png` mit Nearest und mit trilinearer Interpolation an. Welche Bytes kann ein Kanal mit Nearest noch haben? Wie stark weicht dein Ergebnis mit trilinearer Interpolation vom Foto ab, und warum?
 2. Wende `raetsel-8.png` mit Nearest und mit trilinearer Interpolation an. Wo unterscheiden sich die beiden Bilder, und warum?
-3. Erzeuge eine eigene LUT, aus deiner gespeicherten Identität in einem Bildbearbeitungsprogramm oder mit deinem Programm, und wende sie auf das Foto an. Was ändert deine LUT an den Farben?
+3. Erzeuge mit deinem Programm eine eigene LUT und wende sie auf das Foto an. Was ändert sie an den Farben?
 
 \begin{solution}
 ![Das Foto und daneben das Foto mit film-33.png und trilinearer Interpolation](assets/solution-luts.png)

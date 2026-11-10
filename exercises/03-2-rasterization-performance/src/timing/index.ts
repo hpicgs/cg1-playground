@@ -216,7 +216,7 @@ async function measureFrameRate(id: number): Promise<void> {
     const fps = (stamps.length - 1) / seconds;
     readout.fps = format(fps, 1);
     readout.measurement = `${format(1000 / fps, 2)} ms`;
-    readout.perSquare = `${format((1000 * 1000) / fps / settings.squares, 2)} µs`;
+    readout.perSquare = `${format((1000 * 1000) / fps / settings.squares, 2)} us`;
     readout.status = isLostOr("fertig");
 }
 
@@ -252,7 +252,7 @@ async function measureTimes(id: number, wait: boolean): Promise<void> {
     const time = median(times);
     const perSquare = (time - median(emptyTimes)) / settings.squares;
     readout.measurement = time < step ? `unter ${format(step, 1)} ms` : `${format(time, 2)} ms`;
-    readout.perSquare = perSquare > 0 ? `${format(1000 * perSquare, 2)} µs` : "–";
+    readout.perSquare = perSquare > 0 ? `${format(1000 * perSquare, 2)} us` : "–";
     const spread = (100 * (Math.max(...times) - Math.min(...times))) / time;
     readout.spread = Number.isFinite(spread) ? `${format(spread, 0)} %` : "–";
     readout.status = isLostOr("fertig");

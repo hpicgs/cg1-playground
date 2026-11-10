@@ -72,7 +72,7 @@ export function start(
     gui.add(settings, "view", ["Dreiecke", "Fragmente pro Pixel"]).name("Anzeige");
 
     // The corners as a table: one row per corner with x and y.
-    const table = gui.addFolder("Ecken: x, y");
+    const table = gui.addFolder("Eckpunkte: x, y");
     table.domElement.classList.add("cells", "cells-2");
     corners.forEach((corner, k) => {
         table.add(corner, "x").step(0.5).name(names[k]);

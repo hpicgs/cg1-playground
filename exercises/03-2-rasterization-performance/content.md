@@ -1,5 +1,5 @@
 \begin{goals}
-- Beschreiben, welche Dreiecke die GPU aus den Eckpunkten eines Vertex-Arrays als Dreiecke, Dreiecksstreifen und Dreiecksfächer bildet.
+- Beschreiben, welche Dreiecke die GPU aus den Eckpunkten (vertices) eines Vertex-Arrays als Dreiecke, Dreiecksstreifen und Dreiecksfächer bildet.
 - Begründen, wann ein Dreiecksfächer ein Polygon genau abdeckt.
 - Erklären, wie oft der Fragment-Shader läuft, wenn ein Kreis mit `discard` aus einem Quadrat entsteht.
 - Die Zeit zum Zeichnen im Browser messen und erklären, warum einfache Messungen täuschen.
@@ -16,7 +16,7 @@ Weiterführend: [Primitive in OpenGL](https://www.khronos.org/opengl/wiki/Primit
 
 GPUs rasterisieren Primitive: Punkte, Linien, Dreiecke, Dreiecksfächer und Dreiecksstreifen (Kapitel 3, Rasterisierung). Ein Polygon wird deshalb vor der Rasterisierung in Dreiecke zerlegt. Davon hängt ab, wie viele Eckpunkte im Vertex-Array stehen, wie oft der Vertex-Shader läuft und ob jedes Pixel des Polygons genau ein Fragment bekommt.
 
-Die Demo zeigt ein Sechseck auf dem Raster aus der Übung „Dreiecksrasterisierung“. Die GPU zeichnet seine Ecken $v_0, \dots, v_5$ mit einem einzigen Aufruf von `drawArrays` als das Primitiv, das unter „Primitiv“ gewählt ist, und jedes Dreieck bekommt eine eigene Farbe. Die Anzeige „Fragmente pro Pixel“ zeigt stattdessen, wie viele Fragmente jedes Pixel bekommt: je mehr, desto heller. Rechts stehen die Zahl aller Fragmente, der gesetzten Pixel und der Pixel mit mehr als einem Fragment. Die Ecken lassen sich rechts eingeben oder mit der Maus ziehen.
+Die Demo zeigt ein Sechseck auf dem Raster aus der Übung „Dreiecksrasterisierung“. Die GPU zeichnet seine Eckpunkte $v_0, \dots, v_5$ mit einem einzigen Aufruf von `drawArrays` als das Primitiv, das unter „Primitiv“ gewählt ist, und jedes Dreieck bekommt eine eigene Farbe. Die Anzeige „Fragmente pro Pixel“ zeigt stattdessen, wie viele Fragmente jedes Pixel bekommt: je mehr, desto heller. Rechts stehen die Zahl aller Fragmente, der gesetzten Pixel und der Pixel mit mehr als einem Fragment. Die Eckpunkte lassen sich rechts eingeben oder mit der Maus ziehen.
 
 \begin{webgl}
 Das erste Argument von `drawArrays` wählt das Primitiv: `gl.TRIANGLES`, `gl.TRIANGLE_STRIP` oder `gl.TRIANGLE_FAN`.
@@ -29,10 +29,10 @@ Die Demo färbt jedes Dreieck nach seinem letzten Eckpunkt. Der Vertex-Shader gi
 \begin{task}[Primitive]
 1. „Primitiv“ steht auf TRIANGLE_FAN. Wie viele Dreiecke entstehen, welchen Eckpunkt haben alle gemeinsam, und wie viele Eckpunkte bräuchte TRIANGLES für dieselben Dreiecke?
 2. Ziehe $v_3$ zuerst nach $(16, 8)$ und dann nach $(10, 3)$. Das Polygon ist beide Male nicht mehr konvex. In welchem Fall deckt der Fächer es noch genau ab, und welches Dreieck hat im anderen Fall eine andere Winding Order als die übrigen? Ziehe $v_3$ danach zurück nach $(28, 8)$.
-3. Schalte auf TRIANGLE_STRIP. Welche Dreiecke entstehen jetzt, und warum decken sie das Sechseck nicht ab? Finde eine Reihenfolge der sechs Ecken im Vertex-Array, in der der Streifen das Sechseck genau abdeckt. Trage ihre Koordinaten in dieser Reihenfolge in die Zeilen $v_0$ bis $v_5$ der Tabelle ein und prüfe mit „Fragmente“ und „Pixel mehrfach“.
+3. Schalte auf TRIANGLE_STRIP. Welche Dreiecke entstehen jetzt, und warum decken sie das Sechseck nicht ab? Finde eine Reihenfolge der sechs Eckpunkte im Vertex-Array, in der der Streifen das Sechseck genau abdeckt. Trage ihre Koordinaten in dieser Reihenfolge in die Zeilen $v_0$ bis $v_5$ der Tabelle ein und prüfe mit „Fragmente“ und „Pixel mehrfach“.
 
 \begin{solution}
-![Das Sechseck als Dreiecksstreifen mit den Ecken in der Reihenfolge (4, 8), (8, 2), (8, 16), (20, 3), (22, 16), (28, 8): kein Pixel bekommt mehrere Fragmente.](assets/solution-strip.png)
+![Das Sechseck als Dreiecksstreifen mit den Eckpunkten in der Reihenfolge (4, 8), (8, 2), (8, 16), (20, 3), (22, 16), (28, 8): kein Pixel bekommt mehrere Fragmente.](assets/solution-strip.png)
 \end{solution}
 \end{task}
 
@@ -98,7 +98,7 @@ const time = performance.now() - start;
 ```
 \end{note}
 
-Die Demo zeichnet $K$ Quadrate („Quadrate“) mit der Seitenlänge $s$ in Pixeln in einen Framebuffer aus $1024 \times 1024$ Pixeln, alle an derselben Stelle und jedes mit einem eigenen Aufruf von `drawArrays`, mit eingeschalteter Verblendung. Jedes Quadrat besteht aus gleich großen Dreiecken, abwechselnd gefärbt; die Zahl der Fragmente hängt nicht davon ab, wie viele es sind. Nach jeder Änderung misst die Demo einmal mit dem gewählten Verfahren. „Bildwiederholrate“ zeichnet die Quadrate eine Sekunde lang in jedem Frame und zählt die Frames. „Ohne Warten“ misst nur die Aufrufe. „Mit readPixels“ misst wie im Listing, nach einer Aufwärmzeit neunmal; „Zeit pro Messung“ ist der Median, und für „Zeit pro Quadrat“ wird vorher eine leere Messung abgezogen. „Streuung“ ist der Abstand zwischen der längsten und der kürzesten der neun Messungen, bezogen auf den Median. Bei mehr als $2^{25}$ Dreiecken oder wenn eine Messung länger als 250 ms dauert, misst die Demo nicht und zeigt das unter „Status“.
+Die Demo zeichnet $K$ Quadrate („Quadrate“) mit der Seitenlänge $s$ in Pixeln in einen Framebuffer aus $1024 \times 1024$ Pixeln, alle an derselben Stelle und jedes mit einem eigenen Aufruf von `drawArrays`, mit eingeschalteter Verblendung. Jedes Quadrat besteht aus gleich großen Dreiecken, abwechselnd gefärbt; die Zahl der Fragmente hängt nicht davon ab, wie viele es sind. Nach jeder Änderung misst die Demo einmal mit dem gewählten Verfahren. „Bildwiederholrate“ zeichnet die Quadrate eine Sekunde lang in jedem Frame und zählt die Frames. „Ohne Warten“ misst nur die Aufrufe. „Mit readPixels“ misst wie im Listing, nach einer Aufwärmzeit neunmal; „Zeit pro Messung“ ist der Median, und für „Zeit pro Quadrat“ wird vorher eine leere Messung abgezogen; „us“ steht dort für Mikrosekunden (µs). „Streuung“ ist der Abstand zwischen der längsten und der kürzesten der neun Messungen, bezogen auf den Median. Bei mehr als $2^{25}$ Dreiecken oder wenn eine Messung länger als 250 ms dauert, misst die Demo nicht und zeigt das unter „Status“.
 
 \demo{timing}
 
@@ -111,11 +111,11 @@ Die Demo zeichnet $K$ Quadrate („Quadrate“) mit der Seitenlänge $s$ in Pixe
 ## Eigene Umsetzung
 
 \begin{task}[Dreiecksfächer messen]
-Schreibe ein Programm, das ein regelmäßiges Polygon mit $n$ Ecken auf der CPU als Dreiecksfächer erzeugt, es mit einem Vertex- und einem Fragment-Shader zeichnet und misst, wie die Zeit zum Zeichnen mit $n$ wächst. Rufe deinen Code aus \vscode{src/solution/index.ts}[start] auf; das Ergebnis erscheint in der Demo unter dieser Aufgabe.
+Schreibe ein Programm, das ein regelmäßiges Polygon mit $n$ Eckpunkten auf der CPU als Dreiecksfächer erzeugt, es mit einem Vertex- und einem Fragment-Shader zeichnet und misst, wie die Zeit zum Zeichnen mit $n$ wächst. Rufe deinen Code aus \vscode{src/solution/index.ts}[start] auf; das Ergebnis erscheint in der Demo unter dieser Aufgabe.
 
 Das Ergebnis soll das Polygon für ein einstellbares $n$ so zeigen, dass der Kreis mit Radius $r$ um den Mittelpunkt des Polygons jede Seite des Polygons berührt. Gemessen wird die Zeit pro Fächer für $n$ von 3 bis mindestens 65 536, für $r = 256$ und $r = 128$ Pixel, in einem Raster fester Größe, in das auch das Polygon für $n = 3$ ganz hineinpasst.
 
-Trage deine Messwerte in \vscode{src/results/results.json}[results.json] ein, als Liste von Zeilen mit einem Wert pro Spalte, zum Beispiel `[{ "n": 3, "r = 256 (µs)": 4.1, "r = 128 (µs)": 1.2 }]`. Die Tabelle unter der Demo zeigt sie an.
+Trage deine Messwerte in \vscode{src/results/results.json}[results.json] ein, als Liste von Zeilen mit einem Wert pro Spalte, zum Beispiel `[{ "n": 3, "r = 256 (us)": 4.1, "r = 128 (us)": 1.2 }]` mit den Zeiten in µs. Die Tabelle unter der Demo zeigt sie an.
 
 1. Ab welchem $n$ liegen weniger als 1 % der Fragmente deines Polygons außerhalb des Kreises?
 2. In welchem Bereich von $n$ liegt die Zeit pro Fächer höchstens 10 % über ihrem Minimum? Miss dafür auch viele kleine $n$.
@@ -161,7 +161,7 @@ Welche Dreiecke entstehen mit `gl.TRIANGLE_STRIP` aus den Eckpunkten $v_0, \dots
 \end{question}
 
 \begin{question}
-Ein Polygon wird als Dreiecksfächer ab $v_0$ gezeichnet, seine Ecken stehen der Reihe nach im Vertex-Array. Was stimmt?
+Ein Polygon wird als Dreiecksfächer ab $v_0$ gezeichnet, seine Eckpunkte stehen der Reihe nach im Vertex-Array. Was stimmt?
 - [ ] Ein Fächer braucht einen Eckpunkt in der Mitte des Polygons.
 - [x] Ist das Polygon konvex, bekommt jedes seiner Pixel genau ein Fragment.
 - [ ] Der Fächer deckt jedes solche Polygon genau ab.
@@ -209,7 +209,7 @@ Ein Kreis mit großem Radius entsteht aus einem Quadrat, dessen Fragmente außer
 \end{question}
 
 \begin{question}
-Das Dreieck mit den Ecken $(0, 0)$, $(64, 63)$ und $(63, 64)$ wird mit Edge Function Testing in seiner Bounding Box rasterisiert. Was stimmt ungefähr?
+Das Dreieck mit den Eckpunkten $(0, 0)$, $(64, 63)$ und $(63, 64)$ wird mit Edge Function Testing in seiner Bounding Box rasterisiert. Was stimmt ungefähr?
 - [ ] Es werden rund 64 Pixelzentren getestet.
 - [x] Es werden rund 4100 Pixelzentren getestet.
 - [x] Es entstehen rund 64 Fragmente.

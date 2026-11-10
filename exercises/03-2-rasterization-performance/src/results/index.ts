@@ -1,7 +1,7 @@
 import results from "./results.json";
 
-// One row of the table: a value for each column name.
-type Row = Record<string, string | number>;
+// One row of the table: a value for each column name, null for an empty cell.
+type Row = Record<string, string | number | null>;
 
 // Shows the rows of results.json as a table instead of the canvas, one column per key in the
 // order of first appearance.

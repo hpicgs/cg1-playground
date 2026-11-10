@@ -60,12 +60,13 @@ Die Demo zeigt die drei LUT-Dateien aus `assets/luts/`: oben eine Schicht vergr�
 \begin{task}[LUTs in der Praxis]
 1. Finde zwei Programme oder Geräte, die Farb-LUTs verwenden, etwa aus Videoschnitt, Fotografie oder Spielen. Wofür setzen sie die LUT ein, und in welchem Dateiformat speichern sie sie?
 2. Warum wenden diese Programme eine LUT an, statt die Farbänderung für jedes Bild neu zu berechnen? Denke an eine Kette aus mehreren Farbänderungen und an einen Look, der in einem anderen Programm genauso aussehen soll.
+3. Finde einen Film, eine Serie oder eine Fotografie, deren Look mit einer Farb-LUT entstanden ist. Wie verändert dieser Look die Farben?
 \end{task}
 
 ## Eigene Umsetzung
 
 \begin{note}[Tipp: Bilder byte-genau laden und speichern]
-Lade PNG-Dateien wie in der Übung „Bildfilter auf CPU und GPU“ über `Image`, `drawImage` und `getImageData`; die Bytes bleiben nur erhalten, wenn die Datei kein Farbprofil hat. Zum Speichern schreibst du die Bytes mit `putImageData` in eine Canvas 2D und lädst sie mit `toBlob` und einem Link mit `download` herunter; die Datei kann sich von einer mitgelieferten mit denselben Pixel-Bytes unterscheiden, weil der Browser anders komprimiert. Ein `ImageData` beginnt mit der obersten Bildzeile; `texImage2D` legt sie in die Texturzeile 0, und `readPixels` liefert zuerst die Zeile mit `gl_FragCoord.y` $= 0.5$. Mit LINEAR trifft die Texturkoordinate $\frac{i + 0.5}{W}$ genau die Mitte von Texel $i$ (Übung „Bildfilter auf CPU und GPU“); dazwischen mischt LINEAR die Nachbartexel, am Rand einer Schicht also auch die Nachbarschicht.
+Lade PNG-Dateien wie in der Übung „Bildfilter auf CPU und GPU“ über `Image`, `drawImage` und `getImageData`; die Bytes bleiben nur erhalten, wenn die Datei kein Farbprofil hat. Zum Speichern schreibst du die Bytes mit `putImageData` in eine Canvas 2D und lädst sie mit `toBlob` und einem Link mit `download` herunter; die Datei kann sich von einer mitgelieferten mit denselben Pixel-Bytes unterscheiden, weil der Browser anders komprimiert. Ein `ImageData` beginnt mit der obersten Bildzeile; `texImage2D` legt sie in die Texturzeile 0, und `readPixels` liefert zuerst die Zeile mit `gl_FragCoord.y` $= 0.5$. Einen einzelnen Texel ohne Interpolation liest `texelFetch` mit ganzzahligen Texelkoordinaten, unabhängig von NEAREST oder LINEAR.
 \end{note}
 
 \begin{task}[Eigene 3D-LUTs]
@@ -75,6 +76,7 @@ Das Ergebnis soll das Foto und das gefärbte Foto nebeneinander zeigen, und man 
 
 1. Wende `identitaet-4.png` mit Nearest und mit trilinearer Interpolation an. Welche Bytes kann ein Kanal mit Nearest noch haben? Wie stark weicht dein Ergebnis mit trilinearer Interpolation vom Foto ab, und warum?
 2. Wende `raetsel-8.png` mit Nearest und mit trilinearer Interpolation an. Wo unterscheiden sich die beiden Bilder, und warum?
+3. Erzeuge eine eigene LUT, aus deiner gespeicherten Identität in einem Bildbearbeitungsprogramm oder mit deinem Programm, und wende sie auf das Foto an. Was ändert deine LUT an den Farben?
 
 \begin{solution}
 ![Das Foto und daneben das Foto mit film-33.png und trilinearer Interpolation](assets/solution-luts.png)
@@ -84,7 +86,7 @@ Das Ergebnis soll das Foto und das gefärbte Foto nebeneinander zeigen, und man 
 \demo{solution}
 
 \begin{task}[Eigene Looks (optional)]
-Bearbeite deine gespeicherte Identität in einem Bildbearbeitungsprogramm wie GIMP oder Krita, etwa mit Kurven oder einer Farbbalance. Exportiere sie ohne Farbprofil, lege sie in `assets/luts/`, lade sie in deinem Programm und wende sie auf das Foto an. Wende danach eine Glättung auf das LUT-Bild an und schau, was an den Rändern der Schichten passiert. Weitere Ideen: eine `.cube`-Datei einlesen oder deine Interpolation mit einer 3D-Textur (`TEXTURE_3D` mit LINEAR) vergleichen.
+Probiere weitere eigene LUTs aus. Ideen: eine Glättung auf ein LUT-Bild anwenden und schauen, was an den Rändern der Schichten passiert, eine `.cube`-Datei einlesen oder deine Interpolation mit einer 3D-Textur (`TEXTURE_3D` mit LINEAR) vergleichen.
 \end{task}
 
 \begin{summary}

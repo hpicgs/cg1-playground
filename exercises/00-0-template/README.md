@@ -41,7 +41,11 @@ src/example/
   quad.frag     Fragment-Shader
 ```
 
-Braucht eine Aufgabe Code auf der CPU, kommt er in eine eigene Datei, wie `src/line/example.ts`.
+Braucht eine Aufgabe Code auf der CPU, kommt er in eine eigene Datei, wie `src/line/bresenham.ts`.
+
+Hat die Seite eine Aufgabe unter „Eigene Umsetzung“, startet deine Lösung in `src/solution/index.ts`. Dort steht nur eine leere Funktion `start(canvas, controls)`, die die Seite mit der Zeichenfläche und einem Element für Regler aufruft. Deine eigenen Dateien legst du irgendwo in `src/` an und rufst sie von dort auf. Du kannst nur die Pakete verwenden, die die Übung schon mitbringt (in `package.json`); andere Pakete sind nicht vorgesehen. Ist deine Lösung animiert, exportiere zusätzlich `setVisible(visible)`; die Seite ruft sie auf, wenn die Demo in den sichtbaren Bereich kommt oder ihn verlässt, damit du die Animation anhalten kannst.
+
+Shader-Dateien (`.vert`, `.frag`), die du direkt in `src/solution/` anlegst, bekommt `start` wie bei den Demos als dritten Parameter `sources`: ein Objekt, das jeden Dateinamen auf den Quelltext abbildet, zum Beispiel `{ "triangle.frag": "…" }`. Ändert sich einer dieser Shader, startet die Seite deine Lösung neu; exportierst du `rebuild(sources)`, ruft sie stattdessen diese Funktion mit den neuen Quelltexten auf.
 
 In `config/` liegen `plugin.ts` (der Server: rendert `content.md`, speichert Shader aus dem Editor), `markdown.ts` (Markdown, Formeln und die Befehle im LaTeX-Stil), `page.ts` (startet die Demos im Browser), `editor.ts` (Shader-Editor und Code-Listings), `stepper.ts` (Schritt-für-Schritt-Ansichten), `style.css` (Aussehen), `macros.json` (Formel-Makros) und die Einstellungen für TypeScript, ESLint und Prettier. Die Dateien `tsconfig.json`, `eslint.config.js` und `.prettierignore` im Ordner der Übung verweisen nur nach `config/`, damit deine IDE sie findet.
 

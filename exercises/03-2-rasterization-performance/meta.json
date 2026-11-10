@@ -1,0 +1,4 @@
+{
+    "title": "Rasterisierungs-Performance",
+    "description": "Polygone als Dreiecksfächer zeichnen und messen, wie die Zeit zum Zeichnen mit der Zahl der Eckpunkte wächst."
+}

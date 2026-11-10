@@ -1,0 +1,4 @@
+{
+    "title": "Dreiecksrasterisierung",
+    "description": "Eckpunkte und Eckattribute durch Vertex- und Fragment-Shader verfolgen und Dreiecke mit Edge Functions selbst rasterisieren."
+}

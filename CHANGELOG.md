@@ -2,6 +2,11 @@
 
 Every change to a released exercise is listed here, with a note on how to get it with `git pull`.
 
+## 2026-11-06
+
+- The template has a solution hook: under "Eigene Umsetzung", `\demo{solution}` shows the student's own solution, which starts from the empty `start` function in `src/solution/index.ts`. The template README describes it. The exercises of sheet 1 stay unchanged.
+- The template README names `src/line/bresenham.ts` as the example for CPU code.
+
 ## 2026-10-28
 
 - Exercise sheet 1 for Kapitel 2 on the `exercise-01` branch: `02-1-dithering`, `02-2-image-filters`, `02-3-metaballs` and `02-4-mandelbrot`.

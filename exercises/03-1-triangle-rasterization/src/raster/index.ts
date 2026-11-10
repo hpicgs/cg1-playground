@@ -63,7 +63,7 @@ export function start(
 
     // The corners as a table: one row per corner with x, y and colour.
     gui = new GUI({ container: controls, title: "Dreieck", width: 220 });
-    const table = gui.addFolder("Ecken: x, y, Farbe");
+    const table = gui.addFolder("Eckpunkte: x, y, Farbe");
     table.domElement.classList.add("cells", "cells-3");
     corners.forEach((corner, k) => {
         table.add(corner, "x").step(0.5).name(`v${"₀₁₂"[k]}`);

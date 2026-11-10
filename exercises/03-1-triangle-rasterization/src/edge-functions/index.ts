@@ -70,7 +70,7 @@ export function start(
 
     // The corners as a table: one row per corner with x and y.
     gui = new GUI({ container: controls, title: "Edge Functions", width: 220 });
-    const table = gui.addFolder("Ecken: x, y");
+    const table = gui.addFolder("Eckpunkte: x, y");
     table.domElement.classList.add("cells", "cells-2");
     corners.forEach((corner, k) => {
         table.add(corner, "x").step(0.5).name(`v${"₀₁₂"[k]}`);

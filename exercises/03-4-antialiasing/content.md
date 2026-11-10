@@ -18,7 +18,7 @@ Kapitel 3 zeigt unter „Aliasing“ eine Rasterisierung ohne und mit Antialiasi
 
 Die Dreiecksrasterisierung tastet ein Dreieck nur an den Pixelzentren ab (Übung „Dreiecksrasterisierung“): Liegt das Pixelzentrum im Dreieck, bekommt das Pixel die Farbe des Dreiecks, sonst bleibt es, wie es ist. Ein Pixel gehört also ganz oder gar nicht zum Dreieck, egal wie viel seiner Fläche das Dreieck bedeckt. Das Abtasten nur am Pixelzentrum ist eine Abtastung, das Ganz-oder-gar-nicht eine Quantisierung, und aus beiden entsteht Aliasing (Kapitel 3, Rasterisierung – Aliasing): Das Bild auf dem Raster weicht vom Dreieck ab, und zwar umso stärker, je gröber das Raster ist. Verfahren, die diese Aliasing-Artefakte verringern, heißen Antialiasing.
 
-Die Demo rasterisiert ein weißes Dreieck in ein Raster aus $32 \times 18$ Pixeln. Die Punkte sind die Pixelzentren, die Linie ist der genaue Umriss. „Dreieck“ wählt ein großes oder ein schmales Dreieck, die Ecken lassen sich rechts eingeben oder mit der Maus ziehen, und „Verschiebung“ schiebt das Dreieck nach rechts. Rechts stehen die Zahl der gesetzten Pixel und die Fläche des Dreiecks in Pixeln.
+Die Demo rasterisiert ein weißes Dreieck in ein Raster aus $32 \times 18$ Pixeln. Die Punkte sind die Pixelzentren, die Linie ist der genaue Umriss. „Dreieck“ wählt ein großes oder ein schmales Dreieck, die Eckpunkte (vertices) lassen sich rechts eingeben oder mit der Maus ziehen, und „Verschiebung“ schiebt das Dreieck nach rechts. Rechts stehen die Zahl der gesetzten Pixel und die Fläche des Dreiecks in Pixeln.
 
 \demo{aliasing}
 
@@ -77,13 +77,15 @@ Schreibe die Bytes deines Rasters mit `putImageData` in eine Canvas 2D mit $32 \
 \begin{task}[Supersampling auf der CPU]
 Schreibe ein Programm, das Dreiecke auf der CPU mit Edge Function Testing rasterisiert und mit Supersampling glättet. Rufe deinen Code aus \vscode{src/solution/index.ts}[start] auf; das Ergebnis erscheint in der Demo unter dieser Aufgabe.
 
-Das Ergebnis soll zwei verschiedenfarbige Dreiecke mit einer gemeinsamen Kante auf schwarzem Hintergrund zeigen, auf einem Raster, dessen Pixel man einzeln erkennt. Die Ecken und $n$ sollen sich einstellen lassen, und die Samples liegen wie oben auf einem regelmäßigen Gitter. Dafür brauchst du aus Kapitel 3 das Edge Function Testing mit der Top-Left-Konvention und aus Kapitel 2 den Box-Filter.
+Das Ergebnis soll zwei verschiedenfarbige Dreiecke mit einer gemeinsamen Kante auf schwarzem Hintergrund zeigen, auf einem Raster, dessen Pixel man einzeln erkennt. Die Eckpunkte und $n$ sollen sich einstellen lassen, und die Samples liegen wie oben auf einem regelmäßigen Gitter. Dafür brauchst du aus Kapitel 3 das Edge Function Testing mit der Top-Left-Konvention und aus Kapitel 2 den Box-Filter.
 
 1. Welche Farben bekommen die Pixel auf der gemeinsamen Kante, und wie entstehen sie?
 2. Lege die gemeinsame Kante von $(2.5, 2.5)$ nach $(15.5, 15.5)$, so dass viele Samples genau auf ihr liegen. Zähle probeweise ein Sample, an dem eine Edge Function 0 ist, zu keinem der beiden Dreiecke. Was siehst du auf der Kante, und warum? Stelle danach deine Regel wieder her.
 
 \begin{solution}
-![Ein rotes und ein blaues Dreieck mit einer gemeinsamen Kante, mit 4 × 4 Samples pro Pixel auf einem Raster aus großen Pixeln](assets/solution-cpu.png)
+![Auf Pixelebene: ein rotes und ein blaues Dreieck mit einer gemeinsamen Kante, mit 4 × 4 Samples pro Pixel auf einem Raster aus großen Pixeln](assets/solution-cpu.png)
+
+![In voller Auflösung: dieselben Dreiecke 29-mal so groß, mit 4 × 4 Samples pro Pixel und einem Pixel des Rasters pro Pixel des Bildes](assets/solution-cpu-full.png)
 \end{solution}
 \end{task}
 

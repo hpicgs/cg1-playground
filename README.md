@@ -46,6 +46,22 @@ The demos need WebGL 2. [get.webgl.org/webgl2](https://get.webgl.org/webgl2/) sh
 
 What you change in your IDE shows up on the page right away. If you change a shader (`.vert` or `.frag`), only the demo that uses it is recompiled. If you change a `.ts` file, the whole page reloads and all controls are reset.
 
+## Publishing to GitHub Pages
+
+From the repository root, run:
+
+```sh
+npm run deploy
+```
+
+This runs all checks, builds the landing page and every exercise into `dist/`, then publishes that folder to the `gh-pages` branch of the `origin` remote. You need permission to push to that remote and working git authentication.
+
+After the first deployment, open the repository's **Settings → Pages**, select **Deploy from a branch**, and choose **gh-pages** with **/ (root)**. For this repository, the site is at https://hpicgs.github.io/cg1-playground/.
+
+To inspect the production build locally, run `npm run build` and then `npm run preview`. The build uses relative URLs, so it also works under a fork's GitHub Pages path.
+
+GitHub Pages serves static files. Demos, quizzes and in-browser shader compilation work there; saving shaders or text to disk and opening local files in your IDE require `npm run dev` in a local checkout.
+
 ## Getting new exercises and fixes
 
 New exercises are added every two weeks. Get them with:

@@ -1,1 +1,3 @@
-export { default } from "./config/eslint.config.js";
+import config from "./config/eslint.config.js";
+
+export default [...config, { ignores: ["dist/**"] }];

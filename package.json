@@ -11,6 +11,10 @@
     "prettier": "./config/.prettierrc.json",
     "scripts": {
         "dev": "vite --config config/vite.config.ts",
+        "build": "vite build --config config/vite.build.config.ts",
+        "preview": "vite preview --config config/vite.build.config.ts",
+        "predeploy": "npm run check && npm run build",
+        "deploy": "gh-pages --dist dist --nojekyll",
         "check": "npm run check:repo && npm run typecheck && npm run lint && npm run pretty:check",
         "check:repo": "node config/check.ts",
         "typecheck": "tsc -b && npm run typecheck --workspaces --if-present",
@@ -27,6 +31,7 @@
         "@types/markdown-it": "14.2.0",
         "@types/node": "24.19.2",
         "eslint": "10.12.0",
+        "gh-pages": "6.3.0",
         "prettier": "3.9.10",
         "typescript": "6.0.3",
         "typescript-eslint": "8.71.2",

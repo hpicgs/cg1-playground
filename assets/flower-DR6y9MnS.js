@@ -1,0 +1,1 @@
+var e=new URL(`flower-Id4_GDzz.png`,import.meta.url).href;export{e as t};

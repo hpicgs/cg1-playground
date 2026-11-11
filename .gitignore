@@ -1,0 +1,11 @@
+# Installed packages
+node_modules/
+
+package-lock.json
+
+# Build output
+dist/
+
+# Editor and OS files
+.DS_Store
+Thumbs.db

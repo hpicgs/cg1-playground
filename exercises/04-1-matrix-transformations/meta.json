@@ -1,0 +1,4 @@
+{
+    "title": "Matrixtransformationen",
+    "description": "Affine Transformationen eines 2D-Polygons in homogenen Koordinaten von Hand berechnen und verketten."
+}

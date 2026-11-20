@@ -58,11 +58,12 @@ Stelle *twist* mit der Stärke 1 und die Darstellung „Fläche und Kanten" ein.
 \end{task}
 
 \begin{task}[Wo eine Deformation wirkt]
-Stelle *shear* mit der Stärke 1 ein.
+Diese Aufgabe untersucht, wo genau eine Deformation wirkt.
 
-1. Welcher Teil des Körpers bleibt unverformt, welcher wird verformt, und welcher wird nur verschoben?
+1. Stelle *shear* mit der Stärke 1 ein. Welcher Teil des Körpers bleibt unverformt, welcher wird verformt, und welcher wird nur verschoben?
 2. Welcher der beiden Bestandteile einer Deformation, $a$ oder $s$, entscheidet darüber?
 3. Stelle *twist* mit der Stärke 1 ein. Woran siehst du, dass dort ein anderes $s$ wirkt?
+4. Stelle die Feinheit auf „grob" ein und teste alle Deformationen aus. Was fällt dir im Vergleich zu „fein" auf? Woran liegt der Unterschied?
 
 \end{task}
 

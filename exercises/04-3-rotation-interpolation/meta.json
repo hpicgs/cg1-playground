@@ -1,0 +1,4 @@
+{
+    "title": "Rotationen interpolieren",
+    "description": "Orientierungen mit Matrixkoeffizienten, Eulerwinkeln und Quaternionen interpolieren und die drei Wege vergleichen."
+}

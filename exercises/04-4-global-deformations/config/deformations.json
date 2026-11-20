@@ -1,0 +1,6 @@
+{
+    "deformations": ["keine", "pinch", "twist", "bend", "mold", "shear"],
+    "levels": ["fein", "grob"],
+    "displays": ["Fläche", "Fläche und Kanten"],
+    "stripes": 8
+}

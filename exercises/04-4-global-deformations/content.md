@@ -36,9 +36,9 @@ Jede Deformation hat eine Amplitude $a$, die bestimmt, wie stark sie wirkt, und 
 
 Die Demo zeigt für fünf der sechs Operatoren je eine mögliche Wahl von $s$ und der genauen Rechnung.
 
-\begin{webgl}
+\begin{note}[Scherung und shear]
 Das Wort Scherung steht in der Vorlesung für die lineare Transformation $H$ mit den Koeffizienten $k_{ij}$; im englischen Zitat zu den axialen Deformationen steht *shear* für den Operator oben. Es sind zwei verschiedene Begriffe, die dasselbe Wort benutzen.
-\end{webgl}
+\end{note}
 
 \begin{note}[Über die Vorlesung hinaus: Kamera, Projektion und Tiefentest]
 Die Demo zeichnet räumlich und braucht dafür neben der Model-Transformation noch eine View- und eine Projektionsmatrix sowie den Tiefentest. Beides ist auf der Seite „Szenenhierarchie" beschrieben; die Szene liegt wieder in einem rechtshändigen Koordinatensystem, in dem $z$ nach oben zeigt.
@@ -70,7 +70,7 @@ Diese Aufgabe untersucht, wo genau eine Deformation wirkt.
 ## Eigene Umsetzung
 
 \begin{task}[Eigene Deformationen]
-Schreibe ein Programm, das einen tessellierten Körper im Vertex-Shader verformt, und zwar mit *pinch*, *twist* und *bend*. Zwei von ihnen sollen sich zugleich anwenden lassen. Rufe deinen Code aus \vscode{src/solution/index.ts}[start] auf; das Ergebnis erscheint in der Demo unter dieser Aufgabe.
+Schreibe ein Programm, das einen tessellierten Körper im Vertex-Shader verformt, und zwar mit allen sechs axialen Deformationen: *pinch*, *shear*, *bend*, *taper*, *mold* und *twist*. Zwei von ihnen sollen sich zugleich anwenden lassen. Rufe deinen Code aus \vscode{src/solution/index.ts}[start] auf; das Ergebnis erscheint in der Demo unter dieser Aufgabe.
 
 Die Deformationen und ihre Stärke lassen sich wählen, und die Oberfläche ist so eingefärbt, dass die Verformung zu sehen ist. Als Körper kannst du `assets/meshes/saeule-fein.json` laden, das die Positionen und die Dreiecke der Säule enthält, oder einen eigenen erzeugen. Kamera, Tiefentest und Shader-Programm darfst du von den Seiten davor übernehmen.
 
@@ -78,7 +78,7 @@ Dafür brauchst du aus Kapitel 4 die nichtlinearen Transformationen und die axia
 
 1. Wende *twist* und *bend* zugleich an, einmal in der einen und einmal in der anderen Reihenfolge. Unterscheiden sich die Ergebnisse, und woran liegt das?
 2. Ändere bei einer deiner Deformationen die Funktion $s$ so, dass sie nur auf einem Teil der Höhe wirkt. Wie ändert sich das Ergebnis?
-3. Welche Punkte deines Körpers bleiben bei jeder deiner drei Deformationen dort, wo sie sind?
+3. Welche Punkte deines Körpers bleiben bei den Deformationen in Zylinderkoordinaten dort, wo sie sind, und welche bei den übrigen?
 
 \begin{solution}
 ![Die Säule, im Vertex-Shader zugleich mit twist und bend verformt](assets/solution-deformations.png)
@@ -88,7 +88,7 @@ Dafür brauchst du aus Kapitel 4 die nichtlinearen Transformationen und die axia
 \demo{solution}
 
 \begin{task}[Weitere Deformationen (optional)]
-Probiere weitere Varianten aus. Ideen: *mold* und *shear* als weitere Operatoren, *taper* als sechster, ein anderer Körper, oder ein Modell aus einer eigenen Datei.
+Kombiniere die Deformationen mit einer Szenenhierarchie wie auf der Seite „Szenenhierarchie": eine Szene aus mehreren Körpern mit eigenen lokalen Transformationen, von denen einzelne verformt werden, und animiere Transformationen und Stärken über die Zeit. Ideen: ein Baum, dessen Äste sich im Wind biegen, ein Roboterarm aus gebogenen Segmenten, ein Planet aus dem Sonnensystem, der sich beim Umlauf verdreht.
 \end{task}
 
 \begin{summary}

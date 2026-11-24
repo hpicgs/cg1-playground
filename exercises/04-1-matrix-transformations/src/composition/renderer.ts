@@ -104,6 +104,7 @@ export function clear(): void {
  * @param transform - The 3 × 3 matrix the vertex shader applies to every point, written row by
  * row as in the lecture; the default is the identity.
  * @param pointSize - Above 0, the diameter of round points in device pixels.
+ * @param hatch - Above 0, the shape is drawn as diagonal stripes this many device pixels apart.
  */
 export function drawShape(
     rect: Rect,
@@ -112,6 +113,7 @@ export function drawShape(
     color: number[],
     transform: number[] = identity,
     pointSize = 0,
+    hatch = 0,
 ): void {
     // WebGL measures the viewport from the bottom left of the canvas.
     const bottom = gl.drawingBufferHeight - rect.top - rect.height;
@@ -129,6 +131,7 @@ export function drawShape(
     );
     gl.uniform3f(gl.getUniformLocation(program, "color"), color[0], color[1], color[2]);
     gl.uniform1f(gl.getUniformLocation(program, "pointSize"), pointSize);
+    gl.uniform1f(gl.getUniformLocation(program, "hatch"), hatch);
 
     // GLSL stores a matrix column by column, the lecture writes it row by row, so the upload
     // transposes it.

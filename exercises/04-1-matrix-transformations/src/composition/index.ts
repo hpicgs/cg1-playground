@@ -31,13 +31,15 @@ const centre = { x: -2, y: 2 };
 // The total transformation, shown read-only.
 const readout = { row0: "", row1: "", row2: "" };
 
-// Colours: grid, axes, the polygon before, between and after the two transformations, and the
-// centre of the rotation.
+// Colours: grid, axes, the polygon before and after the two transformations, and the centre of
+// the rotation. The step between the two has the colour of the transformation applied first,
+// which is also the colour of its controls.
 const halfGridColor = [0.21, 0.22, 0.27];
 const gridColor = [0.34, 0.36, 0.43];
 const axisColor = [0.56, 0.59, 0.67];
 const originalColor = [0.62, 0.65, 0.72];
-const stepColor = [0.5, 0.42, 0.3];
+const rotationColor = [0.47, 0.7, 1.0];
+const translationColor = [0.45, 0.82, 0.5];
 const imageFillColor = [0.45, 0.29, 0.19];
 const imageColor = [0.88, 0.56, 0.36];
 const centreColor = [0.95, 0.78, 0.3];
@@ -46,6 +48,8 @@ const centreColor = [0.95, 0.78, 0.3];
 // drawing area.
 const cornerSize = 8;
 const centreSize = 11;
+// Distance between two stripes of the hatched step, in CSS pixels.
+const hatchSpacing = 7;
 // Length of a dash on the half coordinates and the gap between two dashes, in units.
 const dashLength = 0.14;
 const dashStep = 0.28;
@@ -69,9 +73,12 @@ export function start(
     const gl = renderer.init(canvas, sources, view);
 
     gui = new GUI({ container: controls, title: "Verkettung", width: 234 });
-    gui.add(params, "angle", -180, 180, 15).name("R: θ in Grad");
-    gui.add(params, "dx", -4, 4, 0.5).name("T: dx");
-    gui.add(params, "dy", -4, 4, 0.5).name("T: dy");
+    const angle = gui.add(params, "angle", -180, 180, 15).name("R: θ in Grad");
+    const dx = gui.add(params, "dx", -4, 4, 0.5).name("T: dx");
+    const dy = gui.add(params, "dy", -4, 4, 0.5).name("T: dy");
+    angle.$name.style.color = css(rotationColor);
+    dx.$name.style.color = css(translationColor);
+    dy.$name.style.color = css(translationColor);
     gui.add(params, "order", orderOptions).name("Reihenfolge");
     gui.add(params, "centre", centreOptions).name("Drehzentrum");
     gui.add(params, "step", stepOptions).name("Zwischenschritt");
@@ -233,8 +240,9 @@ function draw(): void {
     const rotate = rotation();
     const translate = translation(params.dx, params.dy);
 
-    // The first transformation of the chosen order, and the product of both.
+    // The first transformation of the chosen order with its colour, and the product of both.
     const first = params.order === "TR" ? rotate : translate;
+    const stepColor = params.order === "TR" ? rotationColor : translationColor;
     const total = params.order === "TR" ? multiply(translate, rotate) : multiply(rotate, translate);
 
     renderer.clear();
@@ -246,7 +254,9 @@ function draw(): void {
     renderer.drawShape(rect, "loop", polygon, originalColor);
     renderer.drawShape(rect, "points", polygon, originalColor, undefined, cornerSize * dpr);
     if (params.step === "on") {
+        renderer.drawShape(rect, "fan", polygon, stepColor, first, 0, hatchSpacing * dpr);
         renderer.drawShape(rect, "loop", polygon, stepColor, first);
+        renderer.drawShape(rect, "points", polygon, stepColor, first, cornerSize * dpr);
     }
     renderer.drawShape(rect, "fan", polygon, imageFillColor, total);
     renderer.drawShape(rect, "loop", polygon, imageColor, total);
@@ -277,6 +287,11 @@ function row(m: number[], index: number): string {
         .slice(3 * index, 3 * index + 3)
         .map((value) => format(value).padStart(6))
         .join(" ");
+}
+
+// A colour as CSS, e.g. rgb(120 179 255).
+function css(color: number[]): string {
+    return `rgb(${color.map((value) => Math.round(value * 255)).join(" ")})`;
 }
 
 // A number with at most three decimals, e.g. 1.5 or -0.707.

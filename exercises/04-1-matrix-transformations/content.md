@@ -110,7 +110,7 @@ Die zuerst ausgeführte Transformation steht also ganz rechts, direkt beim Punkt
 
 Die Reihenfolge ist dabei entscheidend: Die Matrizenmultiplikation ist im Allgemeinen nicht kommutativ, also $T_A T_B \ne T_B T_A$. Nur in Sonderfällen lassen sich zwei Transformationen vertauschen, etwa zwei Translationen oder zwei Rotationen um denselben Punkt.
 
-Die Demo verkettet eine Rotation $R$ und eine Translation $T$. „Zwischenschritt" zeigt das Polygon nach der ersten der beiden Transformationen.
+Die Demo verkettet eine Rotation $R$ und eine Translation $T$. „Zwischenschritt" zeigt das Polygon nach der ersten der beiden Transformationen. Es ist in der Farbe dieser Transformation schraffiert: blau nach der Rotation, grün nach der Translation.
 
 \demo{composition}
 
@@ -187,7 +187,7 @@ GLSL speichert eine Matrix spaltenweise, die Vorlesung schreibt sie zeilenweise.
 ## Eigene Umsetzung
 
 \begin{task}[Grundtransformationen und Gesamttransformation]
-Die Abbildung zeigt ein Polygon mit den Eckpunkten $(0,0)$, $(2,0)$, $(2,1)$, $(1,1)$, $(1,3)$ und $(0,3)$ und drei Versionen davon, die durch affine Transformationen daraus hervorgehen. Ein Kästchen ist eine Einheit, die helleren Linien sind die Achsen.
+Die Abbildung zeigt ein Polygon mit den Eckpunkten $(0,0)$, $(2,0)$, $(2,1)$, $(1,1)$, $(1,3)$ und $(0,3)$ und drei Versionen davon, die durch affine Transformationen daraus hervorgehen.
 
 ![Das Polygon und die drei Versionen a, b und c](assets/transformationen.svg)
 

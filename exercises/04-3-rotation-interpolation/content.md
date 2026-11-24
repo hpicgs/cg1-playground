@@ -103,7 +103,7 @@ $$
 Eine Orientierung lässt sich also in beiden Richtungen umrechnen. Vier Zahlen genügen für eine Rotation, eine Rotationsmatrix braucht neun oder sechzehn; dafür verarbeitet die Grafikpipeline Transformationen ausschließlich als Matrizen, sodass Quaternionen vor dem Zeichnen umgewandelt werden.
 
 \begin{webgl}
-`gl-matrix` speichert ein Quaternion als `[x, y, z, w]`, also mit dem Realteil hinten, während die Vorlesung $q = (w, \vect{v})$ schreibt. `quat.fromMat3` und `mat4.fromQuat` rechnen zwischen Matrix und Quaternion um.
+`gl-matrix` speichert ein Quaternion als `[x, y, z, w]`, also mit dem Realteil hinten, während die Vorlesung $q = (w, \vect{v})$ schreibt. `quat.fromMat3` und `mat4.fromQuat` rechnen zwischen Matrix und Quaternion um. `webgl-operate` übernimmt diese Typen und Funktionen unverändert von `gl-matrix`, dort gilt also dasselbe.
 \end{webgl}
 
 \begin{task}[Ein Quaternion lesen]

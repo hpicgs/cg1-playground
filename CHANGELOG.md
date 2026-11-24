@@ -2,6 +2,10 @@
 
 Every change to a released exercise is listed here, with a note on how to get it with `git pull`.
 
+## 2026-11-24
+
+- The landing page and the page headers count exercise sheets instead of lecture chapters: "Übung 1" covers chapter 2, and so on. This changes `config/plugin.ts` in every exercise; get it with `git pull`.
+
 ## 2026-11-06
 
 - The template has a solution hook: under "Eigene Umsetzung", `\demo{solution}` shows the student's own solution, which starts from the empty `start` function in `src/solution/index.ts`. The template README describes it. The exercises of sheet 1 stay unchanged.

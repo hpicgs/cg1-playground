@@ -49,7 +49,8 @@ if (byChapter.size === 0) {
 for (const chapter of [...byChapter.keys()].sort((a, b) => a - b)) {
     const section = document.createElement("section");
     const heading = document.createElement("h2");
-    heading.textContent = `Kapitel ${chapter}: ${chapterTitles[chapter] ?? ""}`;
+    // Sheet n covers chapter n + 1, because chapter 1 has no exercises.
+    heading.textContent = `Übung ${chapter - 1}: ${chapterTitles[chapter] ?? ""}`;
     section.append(heading);
     for (const { name, meta } of byChapter.get(chapter) ?? []) {
         const card = document.createElement("a");

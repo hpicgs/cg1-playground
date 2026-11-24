@@ -105,10 +105,11 @@ export function playground(): Plugin {
             const markdown = readFileSync(join(folder, "content.md"), "utf8");
             const content = renderContent(markdown, macros, folder);
 
-            // The chapter is the first part of the folder name, e.g. 02 in 02-1-dithering.
+            // The chapter is the first part of the folder name, e.g. 02 in 02-1-dithering; sheet
+            // n covers chapter n + 1.
             const chapter = Number(basename(folder).slice(0, 2));
             const title = escapeHtml(meta.title);
-            const header = `<header><p class="chapter">Kapitel ${chapter}</p><h1>${title}</h1></header>`;
+            const header = `<header><p class="chapter">Übung ${chapter - 1}</p><h1>${title}</h1></header>`;
 
             return html
                 .replace(/<title>.*<\/title>/, `<title>${title}</title>`)

@@ -1,10 +1,8 @@
 \begin{goals}
 
-- Einen Szenengraphen als Baum lokaler Transformationen lesen.
-- Die Gesamttransformation eines Knotens als Produkt der Transformationen bis zur Wurzel angeben.
-- Erklären, warum eine Änderung an einem Knoten alle seine Kindknoten mitbewegt.
-- Transformationen als `uniform` an den Vertex-Shader übergeben und dort zur Gesamttransformation verketten.
-- Eine Szene aus mehreren Körpern mit eigenen Bewegungen aufbauen.
+- Szenengraph aus geschachtelten lokalen Koordinatensystemen
+- Gesamttransformation als Produkt bis zur Wurzel
+- Transformationen als `uniform` im Vertex-Shader
 
 \end{goals}
 
@@ -46,9 +44,9 @@ uniform int u_depth;
 uniform mat4 u_viewProjection;
 ```
 
-\begin{webgl}
+\begin{note}[Stack statt Produkt]
 Im Pretraversal der Vorlesung wird das Produkt auf der CPU gebildet und als eine fertige Matrix übergeben. Die Demo übergibt stattdessen den Stack selbst, damit die Verkettung im Shader steht und sich dort nachvollziehen lässt. In einer Anwendung lohnt sich das nicht: Das Produkt ist für alle Eckpunkte eines Körpers gleich und wird deshalb einmal pro Körper berechnet, nicht einmal pro Eckpunkt.
-\end{webgl}
+\end{note}
 
 \demo{hierarchy}[hierarchy.vert]
 

@@ -1,10 +1,8 @@
 \begin{goals}
 
-- Eine Orientierung mit Eulerwinkeln in der Reihenfolge Z-Y-X angeben.
-- Gimbal Lock an einer Konfiguration erkennen und erklären.
-- Ein Quaternion als Drehung um eine Achse lesen.
-- Die drei Wege zwischen zwei Orientierungen — Matrixkoeffizienten, Eulerwinkel, Slerp — vergleichen und begründen, warum der erste keine Rotation liefert.
-- Einen Bewegungsablauf zwischen zwei Orientierungen selbst umsetzen.
+- Darstellungen einer Rotation: Matrix, Eulerwinkel, Quaternion
+- Gimbal Lock
+- Interpolation von Orientierungen und Slerp
 
 \end{goals}
 
@@ -130,9 +128,9 @@ $$
 
 Beide Eingaben sind Einheitsquaternionen. Slerp liefert $q_1$ für $t = 0$ und $q_2$ für $t = 1$, bleibt normiert und entspricht einem Bogen auf der Einheitskugel, also einer Interpolation mit konstanter Geschwindigkeit und ohne Beschleunigung. Ist $\langle q_1, q_2 \rangle < 0$, wird $q_2$ durch $-q_2$ ersetzt, damit der kürzere der beiden Bögen genommen wird. Für sehr kleine $\alpha$ wird $\sin\alpha \approx 0$; dort ist die Formel nicht mehr brauchbar, und die lineare Interpolation genügt.
 
-\begin{webgl}[Notation]
+\begin{note}[Notation]
 Das Zeichen $\alpha$ steht auf dieser Seite an zwei Stellen für verschiedene Dinge, beide Male wie in der Vorlesung: oben für den Rollwinkel um die $x$-Achse, hier für den Winkel zwischen den beiden Quaternionen.
-\end{webgl}
+\end{note}
 
 Die Demo zeigt für drei Paare von Orientierungen alle drei Wege nebeneinander: links die Matrixkoeffizienten, in der Mitte die Eulerwinkel, rechts Slerp. Die Körper laufen mit $t$ zusätzlich ein Stück nach vorn.
 

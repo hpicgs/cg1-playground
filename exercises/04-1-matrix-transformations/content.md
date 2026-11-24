@@ -1,10 +1,9 @@
 \begin{goals}
 
-- Affine Transformationen eines Polygons in homogenen Koordinaten als $3 \times 3$-Matrix angeben.
-- Aus der Abbildung eines Polygons die Grundtransformationen ablesen.
-- Transformationen zu einer Gesamttransformation verketten und die Reihenfolge begründen.
-- Eine Drehung um einen beliebigen Punkt aus Translation, Drehung und Rücktranslation zusammensetzen.
-- An einer Matrix erkennen, was sie mit Fläche und Orientierung macht.
+- Homogene Koordinaten: affine Transformationen als eine Matrix
+- Verkettung als Matrizenprodukt und die Bedeutung der Reihenfolge
+- Transformationen um einen beliebigen Punkt
+- Determinante, Fläche und Orientierung
 
 \end{goals}
 
@@ -40,9 +39,9 @@ Die letzte Zeile sorgt dafür, dass das Ergebnis wieder $w = 1$ hat. Werden mehr
 
 Die Koordinaten eines Punktes sind dabei nicht eindeutig: $(x, y, 1)$ und $(2x, 2y, 2)$ beschreiben denselben Punkt, denn geteilt durch $w$ ergeben beide $(x, y)$. Punkte mit $w = 0$ liegen im Unendlichen, und $(0, 0, 0)$ ist nicht definiert.
 
-\begin{webgl}[Unterschied zur Vorlesung]
+\begin{note}[Unterschied zur Vorlesung]
 Die Vorlesung schreibt die Transformationen für den dreidimensionalen Raum, also als $4 \times 4$-Matrizen. Diese Seite arbeitet in der Ebene; dasselbe Schema ergibt dort $3 \times 3$-Matrizen mit der letzten Zeile $(0, 0, 1)$. Die Achsen liegen wie in den Abbildungen der Vorlesung: $x$ nach rechts, $y$ nach oben.
-\end{webgl}
+\end{note}
 
 ## Die Grundtransformationen
 

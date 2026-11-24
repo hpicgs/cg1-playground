@@ -1,9 +1,8 @@
 \begin{goals}
 
-- Begründen, warum sich eine nichtlineare Transformation nicht als Matrix schreiben lässt.
-- Die axialen Deformationen danach unterscheiden, welche Koordinate sie verändern und wovon das abhängt.
-- Erklären, warum die Feinheit der Tessellierung das Ergebnis bestimmt.
-- Eine Deformation im Vertex-Shader umsetzen.
+- Nichtlineare Transformationen und warum sie keine Matrix haben
+- Axiale globale Deformationen: Amplitude $a$ und Funktion $s$
+- Tessellierung und Genauigkeit einer Deformation
 
 \end{goals}
 

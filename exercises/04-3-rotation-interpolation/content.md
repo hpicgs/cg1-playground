@@ -175,7 +175,7 @@ Dafür brauchst du aus Kapitel 4 die Eulerwinkel in der Reihenfolge Z-Y-X, die Q
 \demo{solution}
 
 \begin{task}[Mehr Wege (optional)]
-Probiere weitere Varianten aus. Ideen: ein Weg über drei oder mehr Orientierungen, eine normierte lineare Interpolation der Quaternionen im Vergleich mit Slerp, eine andere Reihenfolge der Eulerwinkel, oder Achse und Winkel der Drehung, die aus deinem Ergebnis wieder abgelesen werden.
+Probiere weitere Varianten aus. Ideen: eine normierte lineare Interpolation der Quaternionen im Vergleich mit Slerp, eine andere Reihenfolge der Eulerwinkel, oder Achse und Winkel der Drehung, die aus deinem Ergebnis wieder abgelesen werden.
 \end{task}
 
 \begin{summary}

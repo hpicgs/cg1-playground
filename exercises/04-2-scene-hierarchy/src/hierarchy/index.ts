@@ -18,6 +18,13 @@ const nodeOptions = { Plattform: "platform", Arm: "arm", Gondel: "gondola" };
 // The local transformation of the chosen node and the four rows of its total transformation.
 const readout = { local: "", row0: "", row1: "", row2: "", row3: "" };
 
+// The scene graph: the parent of each node, and the role of each node relative to the chosen one,
+// shown in the tree in these colours.
+const parents: Record<string, string | null> = { platform: null, arm: "platform", gondola: "arm" };
+const roles: Record<string, string> = { platform: "", arm: "", gondola: "" };
+const nodeRoleColor = [0.95, 0.45, 0.85];
+const parentRoleColor = [0.3, 0.85, 1.0];
+
 // One flat colour per body, and how many stripes per unit length it gets.
 const platformColor = [0.36, 0.45, 0.62];
 const armColor = [0.55, 0.57, 0.62];
@@ -28,6 +35,9 @@ const gondolaStripes = 4.0;
 
 // The camera orbits the origin at a fixed distance; dragging changes the two angles.
 const distance = 7;
+// How far the picture is moved to the left, in clip coordinates, so that the controls at the top
+// right do not cover the scene.
+const shiftLeft = 0.35;
 let azimuth = -65;
 let elevation = 24;
 
@@ -36,6 +46,7 @@ let gui: GUI;
 let platformMesh: renderer.Mesh;
 let armMesh: renderer.Mesh;
 let gondolaMesh: renderer.Mesh;
+const roleFields: Record<string, HTMLInputElement> = {};
 
 export function start(
     element: HTMLCanvasElement,
@@ -60,6 +71,19 @@ export function start(
     gui.add(params, "gondolaAngle", -180, 180, 5).name("Gondel: Drehung");
     gui.add(params, "armOrder", armOrderOptions).name("Verkettung im Arm");
     gui.add(params, "node", nodeOptions).name("Knoten");
+
+    // The scene graph as a tree, each name in the colour of its body.
+    const treeFolder = gui.addFolder("Szenengraph");
+    const tree = [
+        ["platform", "Plattform", platformColor],
+        ["arm", "└ Arm", armColor],
+        ["gondola", "\u2003└ Gondel", gondolaColor],
+    ] as const;
+    for (const [node, label, color] of tree) {
+        const controller = treeFolder.add(roles, node).name(label).disable();
+        controller.$name.style.color = css(color);
+        roleFields[node] = controller.domElement.querySelector("input") as HTMLInputElement;
+    }
     gui.add(readout, "local").name("Lokale Transformation").disable();
 
     const matrixFolder = gui.addFolder("Gesamttransformation");
@@ -140,8 +164,11 @@ function viewProjection(): mat4 {
     mat4.lookAt(view, eye, [0, 0, 0], [0, 0, 1]);
     const projection = mat4.create();
     mat4.perspective(projection, radians(40), canvas.width / canvas.height, 0.1, 100);
+    const shift = mat4.create();
+    mat4.fromTranslation(shift, [-shiftLeft, 0, 0]);
     const product = mat4.create();
     mat4.multiply(product, projection, view);
+    mat4.multiply(product, shift, product);
     return product;
 }
 
@@ -180,7 +207,17 @@ function draw(): void {
     renderer.drawMesh(platformMesh, paths.platform, camera, platformColor, platformStripes);
     renderer.drawMesh(armMesh, paths.arm, camera, armColor, armStripes);
     renderer.drawMesh(gondolaMesh, paths.gondola, camera, gondolaColor, gondolaStripes);
+    showRoles();
     showReadout(total(paths[params.node]));
+}
+
+// The role of every node in the tree: the chosen node and its parent.
+function showRoles(): void {
+    const parent = parents[params.node];
+    for (const node of Object.keys(roles)) {
+        roles[node] = node === params.node ? "gewählt" : node === parent ? "Elternknoten" : "";
+        roleFields[node].style.color = css(node === params.node ? nodeRoleColor : parentRoleColor);
+    }
 }
 
 // The local transformation of the chosen node as a symbol, and its total transformation row by
@@ -210,6 +247,11 @@ function row(matrix: mat4, index: number): string {
 // A number with at most two decimals, e.g. 1.4 or -0.77.
 function format(value: number): string {
     return String(Number(value.toFixed(2)));
+}
+
+// A colour as CSS, e.g. rgb(92 115 158).
+function css(color: readonly number[]): string {
+    return `rgb(${color.map((value) => Math.round(value * 255)).join(" ")})`;
 }
 
 function radians(degrees: number): number {

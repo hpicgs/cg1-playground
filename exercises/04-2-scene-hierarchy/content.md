@@ -60,7 +60,7 @@ Ergänze `hierarchy.vert` im Editor so, dass `model` die Gesamttransformation de
 
 ## Was ein Knoten mitzieht
 
-Über „Knoten" zeigt die Demo die lokale Transformation und die Gesamttransformation eines der drei Knoten an. Damit lässt sich verfolgen, wie sich eine Änderung an einem Knoten im Produkt niederschlägt.
+Über „Knoten" zeigt die Demo die lokale Transformation und die Gesamttransformation eines der drei Knoten an. Damit lässt sich verfolgen, wie sich eine Änderung an einem Knoten im Produkt niederschlägt. „Szenengraph" zeigt den Baum der drei Knoten und markiert den gewählten Knoten und seinen Elternknoten.
 
 \begin{task}[Mitbewegen und Reihenfolge]
 
@@ -75,7 +75,7 @@ Ergänze `hierarchy.vert` im Editor so, dass `model` die Gesamttransformation de
 \begin{task}[Eigenes Sonnensystem]
 Schreibe ein Programm, das ein Sonnensystem aus mehreren Körpern zeigt, die über eine Hierarchie lokaler Transformationen angeordnet sind. Mindestens ein Körper soll einen Körper umkreisen, der selbst einen anderen umkreist, also Sonne, Planet und Mond. Rufe deinen Code aus \vscode{src/solution/index.ts}[start] auf; das Ergebnis erscheint in der Demo unter dieser Aufgabe.
 
-Jeder Körper dreht sich außerdem um seine eigene Achse, die Bahnen sind Ellipsen, und die Körper sind so eingefärbt, dass ihre Eigendrehung zu sehen ist. Die Szene läuft über eine Zeit, die sich einstellen und anhalten lässt.
+Jeder Körper dreht sich außerdem um seine eigene Achse, die Bahnen sind Ellipsen, mindestens eine Bahn ist gegen die anderen geneigt, und die Körper sind so eingefärbt, dass ihre Eigendrehung zu sehen ist. Die Szene läuft über eine Zeit, die sich einstellen und anhalten lässt.
 
 Dafür brauchst du aus Kapitel 4 die Transformationskomposition, die hierarchischen Koordinatensysteme und die Model-Transformation als `uniform`.
 
